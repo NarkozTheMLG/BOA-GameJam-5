@@ -8,7 +8,8 @@ public class BattleSystem : MonoBehaviour
  [Header("UI & Player References")]
     public GameObject battleUI;       
     //public MonoBehaviour playerMovement;
-
+    public Transform playerTransform;
+        public Transform enemyTransform;
     [Header("Current Battle Info")]
     public Sickness Enemy; 
     public Sickness Schizophrenia;
@@ -30,12 +31,11 @@ public class BattleSystem : MonoBehaviour
     void Start()
     {
         state = BattleState.NONE;
-        StartBattle(Enemy);
     }
-public void StartBattle(Sickness enemyFromWorld)
+public void StartBattle(Sickness enemyFromWorld, Transform enemyTransFromWorld)
     {
         Enemy = enemyFromWorld;
-
+        enemyTransform = enemyTransFromWorld;
      //   playerMovement.enabled = false;
         battleUI.SetActive(true);
 
@@ -52,6 +52,7 @@ public void StartBattle(Sickness enemyFromWorld)
 
     void PlayerTurn()
     {
+        state = BattleState.PLAYERTURN;
         Debug.Log("Player's turn. Choose an action.");
     }
 
@@ -78,12 +79,22 @@ public void ExecuteMove(string moveName)
         }
         else if(moveName == "Schizophrenia")
         {
+            if (Schizophrenia == null)
+            {
+                Debug.LogError("Schizophrenia move reference is missing or destroyed.");
+                return;
+            }
             damageToDeal = Schizophrenia.damage;
             prefabToUse = schizophreniaPrefab;
             state = BattleState.ENEMYTURN;
         }
         else if (moveName == "Insomnia")
         {
+            if (Insomnia == null)
+            {
+                Debug.LogError("Insomnia move reference is missing or destroyed.");
+                return;
+            }
             damageToDeal = Insomnia.damage;
             prefabToUse = insomniaPrefab;
             state = BattleState.ENEMYTURN;
@@ -118,33 +129,57 @@ public void ExecuteMove(string moveName)
                 yield break;
             }
         }
-
+                yield return new WaitForSeconds(0.1f);
         StartCoroutine(EnemyTurn());
     }
 
   IEnumerator EnemyTurn()
     {
         state = BattleState.ENEMYTURN;
+        GameObject prefabToUse = null;
         
-        float waitTime = Random.Range(1f, 3f); 
+        float waitTime = Random.Range(0.5f, 1.5f); 
         yield return new WaitForSeconds(waitTime);
 
         Debug.Log("Enemy attacks!");
         
         if (Enemy != null)
         {
+            if(Enemy.sicknessName == "Schizophrenia")
+                prefabToUse = schizophreniaPrefab;
+            else if(Enemy.sicknessName == "Insomnia")
+                prefabToUse = insomniaPrefab;
+        if (prefabToUse != null)
+        {
+            GameObject projectile = Instantiate(prefabToUse, enemyTransform.position, Quaternion.identity);
+            AttackAnimation anim = projectile.GetComponent<AttackAnimation>();
+            
+            if (anim != null)
+            {
+                anim.Seek(playerTransform);
+            }
+
+        }
+                yield return new WaitForSeconds(0.1f);
+
              Enemy.Attack(); 
         }
+                    yield return new WaitForSeconds(0.1f);
 
-        state = BattleState.PLAYERTURN;
         PlayerTurn();
     }
+
     void BattleWon()
 {
     if (state == BattleState.WON)
     {
-        Destroy(Enemy.gameObject); 
-        battleUI.SetActive(false);
+            if (Enemy != null)
+            {
+                Destroy(Enemy.gameObject);
+                Enemy = null;
+            }
+            enemyTransform = null;
+            battleUI.SetActive(false);
         //playerMovement.enabled = true;
     }
 }

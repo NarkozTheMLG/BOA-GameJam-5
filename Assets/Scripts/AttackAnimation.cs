@@ -7,6 +7,12 @@ public class AttackAnimation : MonoBehaviour
 
     public void Seek(Transform _target)
     {
+        if (_target == null)
+        {
+            Debug.LogWarning("Seek called with null target.");
+            target = null;
+            return;
+        }
         Debug.Log("Seeking target: " + _target.name);
         target = _target;
     }

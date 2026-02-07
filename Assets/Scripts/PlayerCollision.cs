@@ -4,14 +4,17 @@ public class PlayerCollision : MonoBehaviour
 {
     public BattleSystem battleSystem;
 
-    void OnCollisionEnter(Collision collision)
+    void OnTriggerEnter2D(Collider2D other)
     {
-        if (collision.gameObject.CompareTag("Enemy"))
+        Debug.Log("Entered Trigger: " + other.gameObject.name);
+
+        if (other.gameObject.CompareTag("Enemy"))
         {
-            Sickness enemyScript = collision.gameObject.GetComponent<Sickness>();
+            Sickness enemyScript = other.gameObject.GetComponent<Sickness>();
+            Transform enemyTransform = other.gameObject.GetComponent<Transform>();
             if (enemyScript != null)
             {
-                battleSystem.StartBattle(enemyScript);
+                battleSystem.StartBattle(enemyScript,enemyTransform);
             }
         }
     }
