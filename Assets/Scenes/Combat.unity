@@ -1739,6 +1739,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleSystem
   battleUI: {fileID: 185685596}
+  playerTransform: {fileID: 0}
+  enemyTransform: {fileID: 0}
   Enemy: {fileID: 45612282}
   Schizophrenia: {fileID: 1826157818}
   Insomnia: {fileID: 997219216}
