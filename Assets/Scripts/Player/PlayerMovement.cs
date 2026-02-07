@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 3f;
+    [SerializeField] private bool isMovementEnabled = true;
     private Rigidbody2D rb;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
@@ -23,6 +24,14 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleMovement()
     {
+
+        if (!isMovementEnabled)
+        {
+            // Hareketi durdur
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            UpdateAnimation(0);
+            return;
+        }
         float moveInput = GetHorizontalInput();
         ApplyMovement(moveInput);
         UpdateAnimation(moveInput);
@@ -53,5 +62,19 @@ public class PlayerMovement : MonoBehaviour
         {
             spriteRenderer.flipX = moveInput < 0;
         }
+    }
+    public void EnableMovement()
+    {
+        isMovementEnabled = true;
+    }
+
+    public void DisableMovement()
+    {
+        isMovementEnabled = false;
+    }
+
+    public void SetMovement(bool enabled)
+    {
+        isMovementEnabled = enabled;
     }
 }
