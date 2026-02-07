@@ -7,7 +7,7 @@ public class BattleSystem : MonoBehaviour
 {
  [Header("UI & Player References")]
     public GameObject battleUI;       
-    //public MonoBehaviour playerMovement;
+    public PlayerMovement playerMovement;
     public Transform playerTransform;
         public Transform enemyTransform;
     [Header("Current Battle Info")]
@@ -36,7 +36,7 @@ public void StartBattle(Sickness enemyFromWorld, Transform enemyTransFromWorld)
     {
         Enemy = enemyFromWorld;
         enemyTransform = enemyTransFromWorld;
-     //   playerMovement.enabled = false;
+        playerMovement.enabled = false;
         battleUI.SetActive(true);
 
         state = BattleState.START;
@@ -111,7 +111,7 @@ public void ExecuteMove(string moveName)
             }
         }
 
-        StartCoroutine(ProcessAttack(damageToDeal, 0.5f)); 
+        StartCoroutine(ProcessAttack(damageToDeal, 0.8f)); 
     }
 
     IEnumerator ProcessAttack(int damage, float delay)
@@ -180,7 +180,7 @@ public void ExecuteMove(string moveName)
             }
             enemyTransform = null;
             battleUI.SetActive(false);
-        //playerMovement.enabled = true;
+        playerMovement.enabled = true;
     }
 }
 }
