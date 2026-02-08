@@ -1289,12 +1289,36 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1734010460411829964, guid: f5704770900b5448dab8c92d57acde1d, type: 3}
     - target: {fileID: 78178018848853540, guid: 6840ac8cb2d314fa08854d3158b878f3, type: 3}
+      propertyPath: myConversation.lines.Array.data[0].speakerName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 78178018848853540, guid: 6840ac8cb2d314fa08854d3158b878f3, type: 3}
+      propertyPath: myConversation.lines.Array.data[1].speakerName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 78178018848853540, guid: 6840ac8cb2d314fa08854d3158b878f3, type: 3}
+      propertyPath: myConversation.lines.Array.data[2].speakerName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 78178018848853540, guid: 6840ac8cb2d314fa08854d3158b878f3, type: 3}
+      propertyPath: myConversation.lines.Array.data[3].speakerName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 78178018848853540, guid: 6840ac8cb2d314fa08854d3158b878f3, type: 3}
+      propertyPath: myConversation.lines.Array.data[4].speakerName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 78178018848853540, guid: 6840ac8cb2d314fa08854d3158b878f3, type: 3}
+      propertyPath: myConversation.lines.Array.data[5].speakerName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 78178018848853540, guid: 6840ac8cb2d314fa08854d3158b878f3, type: 3}
       propertyPath: myConversation.lines.Array.data[6].speakerName
-      value: sch
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 78178018848853540, guid: 6840ac8cb2d314fa08854d3158b878f3, type: 3}
       propertyPath: myConversation.lines.Array.data[7].speakerName
-      value: sch
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6579599753703197908, guid: 6840ac8cb2d314fa08854d3158b878f3, type: 3}
       propertyPath: m_LocalPosition.x
