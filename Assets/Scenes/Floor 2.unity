@@ -248,6 +248,9 @@ MonoBehaviour:
   creaturePrefab: {fileID: 0}
   roomSceneName: RoomID
   doorID: RoomID
+  requiresIDCard: 0
+  lockedMessageUI: {fileID: 0}
+  messageDisplayTime: 2
 --- !u!61 &70779924
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -490,7 +493,7 @@ SpriteRenderer:
   m_Size: {x: 3.15, y: 2.3}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!1 &165737069
 GameObject:
@@ -572,6 +575,9 @@ MonoBehaviour:
   creaturePrefab: {fileID: 7634851667254130161, guid: 830f8b68e398d904295912bb235f4072, type: 3}
   roomSceneName: MainHall
   doorID: Floor1
+  requiresIDCard: 0
+  lockedMessageUI: {fileID: 0}
+  messageDisplayTime: 2
 --- !u!61 &175972497
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -650,7 +656,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DoorInteract
   creaturePrefab: {fileID: 7634851667254130161, guid: 830f8b68e398d904295912bb235f4072, type: 3}
   roomSceneName: Room
-  doorID: Door1
+  doorID: Door3
+  requiresIDCard: 0
+  lockedMessageUI: {fileID: 0}
+  messageDisplayTime: 2
 --- !u!61 &200705325
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -873,7 +882,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DoorInteract
   creaturePrefab: {fileID: 7634851667254130161, guid: 5afc15c6af72ce444a839420405b70ea, type: 3}
   roomSceneName: Room
-  doorID: Door2
+  doorID: Door4
+  requiresIDCard: 0
+  lockedMessageUI: {fileID: 0}
+  messageDisplayTime: 2
 --- !u!61 &330179157
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1333,7 +1345,7 @@ SpriteRenderer:
   m_Size: {x: 3.15, y: 2.3}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!1 &512975344
 GameObject:
@@ -3526,7 +3538,7 @@ SpriteRenderer:
   m_Size: {x: 3.15, y: 2.3}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1573789040
 GameObject:
@@ -3755,7 +3767,7 @@ SpriteRenderer:
   m_Size: {x: 3.15, y: 2.3}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1612629779
 GameObject:
@@ -4297,6 +4309,9 @@ MonoBehaviour:
   creaturePrefab: {fileID: 7634851667254130161, guid: 5afc15c6af72ce444a839420405b70ea, type: 3}
   roomSceneName: Room
   doorID: Door2
+  requiresIDCard: 0
+  lockedMessageUI: {fileID: 0}
+  messageDisplayTime: 2
 --- !u!1 &1891543963
 GameObject:
   m_ObjectHideFlags: 0
@@ -4452,6 +4467,9 @@ MonoBehaviour:
   creaturePrefab: {fileID: 7634851667254130161, guid: 830f8b68e398d904295912bb235f4072, type: 3}
   roomSceneName: Room
   doorID: Door1
+  requiresIDCard: 0
+  lockedMessageUI: {fileID: 0}
+  messageDisplayTime: 2
 --- !u!61 &1983520714
 BoxCollider2D:
   m_ObjectHideFlags: 0
