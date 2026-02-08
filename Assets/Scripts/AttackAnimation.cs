@@ -2,8 +2,15 @@ using UnityEngine;
 
 public class AttackAnimation : MonoBehaviour
 {
-    public float speed = 10f; 
+    public float speed = 10f;
     private Transform target = null;
+
+    private Vector3 initialScale;
+
+    void Start()
+    {
+        initialScale = transform.localScale;
+    }
 
     public void Seek(Transform _target)
     {
@@ -19,14 +26,24 @@ public class AttackAnimation : MonoBehaviour
 
     void Update()
     {
-     if (target == null)
+        if (target == null)
             return;
+
+        if (target.position.x < transform.position.x)
+        {
+            transform.localScale = new Vector3(Mathf.Abs(initialScale.x), initialScale.y, initialScale.z);
+        }
+        else if (target.position.x > transform.position.x)
+        {
+            transform.localScale = new Vector3(-Mathf.Abs(initialScale.x), initialScale.y, initialScale.z);
+        }
+
         float step = speed * Time.deltaTime;
         transform.position = Vector3.MoveTowards(transform.position, target.position, step);
 
         if (Vector3.Distance(transform.position, target.position) < 0.1f)
         {
-            Debug.Log("Hit somethins");
+            Debug.Log("Hit something");
             Destroy(gameObject);
         }
     }

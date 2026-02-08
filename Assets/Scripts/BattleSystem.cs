@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;      
 using UnityEngine.UI;          
 public enum BattleState { NONE,START, PLAYERTURN, ENEMYTURN, WON, LOST }
-  
+
 public class BattleSystem : MonoBehaviour
 {
     [Header("UI & Player References")]
@@ -15,13 +15,13 @@ public class BattleSystem : MonoBehaviour
     public Sickness Enemy;
     public Sickness Schizophrenia;
     public Sickness Insomnia;
-    // Assuming you will have a Lactose sickness script later
-    // public Sickness Lactose; 
+    // UNCOMMENTED THIS so you can drag the script here
+    public Sickness Lactose;
 
     [Header("Attack Prefabs")]
     public GameObject schizophreniaPrefab;
     public GameObject insomniaPrefab;
-    public GameObject lactosePrefab; // Add this if you have one
+    public GameObject lactosePrefab;
 
     [Header("Visual Effects")]
     public GameObject floatingTextPrefab;
@@ -29,12 +29,12 @@ public class BattleSystem : MonoBehaviour
     [Header("Inventory Buttons")]
     public Button schizophreniaButton;
     public Button insomniaButton;
-    public Button lactoseButton; // NEW: Drag your Lactose Button here
+    public Button lactoseButton;
 
     // --- CACHED IMAGES ---
     private Image schizoBtnImage;
     private Image insomniaBtnImage;
-    private Image lactoseBtnImage; // NEW: Cache for Lactose
+    private Image lactoseBtnImage;
 
     [Header("Setup")]
     public Transform playerHand;
@@ -45,6 +45,7 @@ public class BattleSystem : MonoBehaviour
     private int playerMaxHealth = 100;
     private bool playerIsAsleep = false;
     private bool enemyIsAsleep = false;
+
     void Start()
     {
         state = BattleState.NONE;
@@ -70,6 +71,11 @@ public class BattleSystem : MonoBehaviour
         battleUI.SetActive(true);
         HUDManager.Instance.ToggleBattleUI(true);
 
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.SwitchToBattle();
+        }
+
         if (Enemy != null) HUDManager.Instance.SetEnemyName(Enemy.sicknessName);
 
         playerCurrentHealth = playerMaxHealth;
@@ -85,7 +91,7 @@ public class BattleSystem : MonoBehaviour
 
     void SetupBattle()
     {
-        CheckInventoryButtons(); // Updates transparency based on inventory
+        CheckInventoryButtons();
         state = BattleState.PLAYERTURN;
         PlayerTurn();
     }
@@ -108,7 +114,7 @@ public class BattleSystem : MonoBehaviour
             SetButtonAlpha(insomniaBtnImage, hasInsomnia);
         }
 
-        // 3. Lactose (NEW)
+        // 3. Lactose
         bool hasLactose = InventoryManager.Instance.HasItem("Lactose");
         if (lactoseButton != null)
         {
@@ -117,13 +123,11 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-    // Helper: Changes opacity efficiently using the cached image
     void SetButtonAlpha(Image targetImage, bool isActive)
     {
         if (targetImage == null) return;
-
         Color c = targetImage.color;
-        c.a = isActive ? 1f : 0.5f; // 100% or 50% visible
+        c.a = isActive ? 1f : 0.5f;
         targetImage.color = c;
     }
 
@@ -137,22 +141,26 @@ public class BattleSystem : MonoBehaviour
                 Destroy(Enemy.gameObject);
                 Enemy = null;
             }
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.SwitchToNormal();
+            }
             enemyTransform = null;
             battleUI.SetActive(false);
             HUDManager.Instance.ToggleBattleUI(false);
             playerMovement.enabled = true;
         }
     }
+
     void PlayerTurn()
     {
         state = BattleState.PLAYERTURN;
 
-        // 1. Check if Player is Asleep
         if (playerIsAsleep)
         {
             Debug.Log("Zzz... You are asleep and skipped a turn!");
-            playerIsAsleep = false; // Wake up for next time
-            StartCoroutine(EnemyTurn()); // Skip directly to enemy
+            playerIsAsleep = false;
+            StartCoroutine(EnemyTurn());
             return;
         }
 
@@ -162,6 +170,8 @@ public class BattleSystem : MonoBehaviour
     public void ExecuteMove(string moveName)
     {
         if (state != BattleState.PLAYERTURN) return;
+
+        // --- SCHIZOPHRENIA CHECK ---
         if (moveName == "Schizophrenia")
         {
             if (Schizophrenia != null && playerCurrentEnergy < Schizophrenia.energyCost) return;
@@ -171,22 +181,22 @@ public class BattleSystem : MonoBehaviour
                 LoseEnergy(Schizophrenia.energyCost);
                 StartCoroutine(ShowTextDelayed("What!?...", playerTransform, 0.5f));
                 StartCoroutine(SkipTurnDelay(1f));
-                return; 
+                return;
             }
         }
+        // ---------------------------
+
         GameObject prefabToUse = null;
         int damageToDeal = 0;
 
         if (moveName == "Skip")
         {
-            Debug.Log("You Skipped! +3 Energy");
             GainEnergy(3);
             StartCoroutine(EnemyTurn());
             return;
         }
         else if (moveName == "Defend")
         {
-            Debug.Log("You Defended! +1 Energy, +5 HP");
             GainEnergy(1);
             HealPlayer(5);
             StartCoroutine(EnemyTurn());
@@ -214,16 +224,27 @@ public class BattleSystem : MonoBehaviour
                 prefabToUse = insomniaPrefab;
                 state = BattleState.ENEMYTURN;
 
-                // --- LOGIC: MAKE ENEMY SLEEP ---
-                // 25% Chance the Enemy falls asleep
                 if (Random.value <= 0.25f)
                 {
-                    Debug.Log("INSOMNIA EFFECT: Enemy fell asleep!");
                     enemyIsAsleep = true;
                     StartCoroutine(ShowTextDelayed("Zzz...", Enemy.transform, 0.8f));
                 }
             }
         }
+        // --- NEW: LACTOSE LOGIC ---
+        else if (moveName == "Lactose")
+        {
+            if (Lactose != null)
+            {
+                if (playerCurrentEnergy < Lactose.energyCost) return;
+                LoseEnergy(Lactose.energyCost);
+
+                damageToDeal = Lactose.damage;
+                prefabToUse = lactosePrefab;
+                state = BattleState.ENEMYTURN;
+            }
+        }
+        // --------------------------
 
         if (prefabToUse != null)
         {
@@ -235,37 +256,26 @@ public class BattleSystem : MonoBehaviour
         StartCoroutine(ProcessAttack(damageToDeal, 0.8f));
     }
 
-    // --- HELPER METHODS ---
-
     public void GainEnergy(int amount)
     {
         playerCurrentEnergy += amount;
-        if (playerCurrentEnergy > playerMaxEnergy)
-            playerCurrentEnergy = playerMaxEnergy;
-
+        if (playerCurrentEnergy > playerMaxEnergy) playerCurrentEnergy = playerMaxEnergy;
         HUDManager.Instance.UpdateEnergy(playerCurrentEnergy, playerMaxEnergy);
     }
 
-    // NEW: Helper to remove energy
     public void LoseEnergy(int amount)
     {
         playerCurrentEnergy -= amount;
-        if (playerCurrentEnergy < 0)
-            playerCurrentEnergy = 0;
-
+        if (playerCurrentEnergy < 0) playerCurrentEnergy = 0;
         HUDManager.Instance.UpdateEnergy(playerCurrentEnergy, playerMaxEnergy);
     }
 
     public void HealPlayer(int amount)
     {
         playerCurrentHealth += amount;
-        if (playerCurrentHealth > playerMaxHealth)
-            playerCurrentHealth = playerMaxHealth;
-
+        if (playerCurrentHealth > playerMaxHealth) playerCurrentHealth = playerMaxHealth;
         HUDManager.Instance.UpdatePlayerHealth(playerCurrentHealth, playerMaxHealth);
     }
-
-    // ---------------------------
 
     IEnumerator ProcessAttack(int damage, float delay)
     {
@@ -291,7 +301,6 @@ public class BattleSystem : MonoBehaviour
     {
         state = BattleState.ENEMYTURN;
 
-        // Check Sleep
         if (enemyIsAsleep)
         {
             Debug.Log("Enemy is sleeping...");
@@ -304,38 +313,43 @@ public class BattleSystem : MonoBehaviour
         float waitTime = Random.Range(0.5f, 1.5f);
         yield return new WaitForSeconds(waitTime);
 
-        // --- 2. SCHIZOPHRENIA FAIL CHECK (33% Chance) ---
+        // --- SCHIZO FAIL CHECK ---
         if (Enemy != null && Enemy.sicknessName == "Schizophrenia")
         {
             if (Random.value <= 0.33f)
             {
                 Debug.Log("Enemy Schizo Missed!");
                 StartCoroutine(ShowTextDelayed("What!?...", enemyTransform, 0.5f));
-
-                yield return new WaitForSeconds(1f); // Wait a bit
-                PlayerTurn(); // Give turn back to player
-                yield break; // STOP HERE!
+                yield return new WaitForSeconds(1f);
+                PlayerTurn();
+                yield break;
             }
         }
-        // --------------------------------------------------
 
         Debug.Log("Enemy attacks!");
         GameObject prefabToUse = null;
 
         if (Enemy != null)
         {
-            if (Enemy.sicknessName == "Schizophrenia") prefabToUse = schizophreniaPrefab;
+            if (Enemy.sicknessName == "Schizophrenia")
+            {
+                prefabToUse = schizophreniaPrefab;
+            }
             else if (Enemy.sicknessName == "Insomnia")
             {
                 prefabToUse = insomniaPrefab;
-
-                // 25% Chance Player Sleeps
                 if (Random.value <= 0.25f)
                 {
                     playerIsAsleep = true;
                     StartCoroutine(ShowTextDelayed("Zzz...", playerTransform, 0.5f));
                 }
             }
+            // --- NEW: LACTOSE ENEMY LOGIC ---
+            else if (Enemy.sicknessName == "Lactose")
+            {
+                prefabToUse = lactosePrefab;
+            }
+            // --------------------------------
 
             if (prefabToUse != null)
             {
@@ -346,7 +360,6 @@ public class BattleSystem : MonoBehaviour
 
             yield return new WaitForSeconds(0.5f);
 
-            // Deal Damage
             int incomingDamage = Enemy.damage;
             playerCurrentHealth -= incomingDamage;
             if (playerCurrentHealth < 0) playerCurrentHealth = 0;
@@ -367,24 +380,17 @@ public class BattleSystem : MonoBehaviour
             PlayerTurn();
     }
 
-    // NEW: Coroutine to delay the text
     IEnumerator ShowTextDelayed(string message, Transform target, float delay)
     {
-        // 1. Wait for the animation (projectile flying)
         yield return new WaitForSeconds(delay);
-
-        // 2. Spawn the text
         if (floatingTextPrefab != null && target != null)
         {
             GameObject go = Instantiate(floatingTextPrefab, target.position, Quaternion.identity);
-
             FloatingText ft = go.GetComponent<FloatingText>();
-            if (ft != null)
-            {
-                ft.SetText(message);
-            }
+            if (ft != null) ft.SetText(message);
         }
     }
+
     IEnumerator SkipTurnDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
