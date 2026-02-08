@@ -1,102 +1,82 @@
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UI;  // For your existing Legacy Text
+using TMPro;           // For the new Enemy Name
 
 public class HUDManager : MonoBehaviour
 {
     public static HUDManager Instance { get; private set; }
 
+    [Header("Containers")]
+    [SerializeField] private GameObject energyContainer;
+    [SerializeField] private GameObject enemyHealthContainer;
+    [SerializeField] private GameObject enemyNameContainer;
+
     [Header("Player UI")]
+    // Back to standard Text (Legacy)
     [SerializeField] private Text playerHealthText;
     [SerializeField] private Slider playerHealthBar;
+
+    // Back to standard Text (Legacy)
     [SerializeField] private Text energyText;
     [SerializeField] private Slider energyBar;
 
     [Header("Enemy UI")]
     [SerializeField] private Slider enemyHealthBar;
+
+    // Back to standard Text (Legacy)
     [SerializeField] private Text enemyHealthText;
 
-    private int playerCurrentHealth = 100;
-    private int playerMaxHealth = 100;
-    private int currentEnergy = 5;
-    private int maxEnergy = 5;
-
-    private int enemyCurrentHealth;
-    private int enemyMaxHealth;
+    // KEEP THIS ONE AS TextMeshPro (The new addition)
+    [SerializeField] private TextMeshProUGUI enemyNameText;
 
     void Awake()
     {
-        if (Instance == null)
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+    }
+
+    public void ToggleBattleUI(bool isActive)
+    {
+        if (energyContainer != null) energyContainer.SetActive(isActive);
+        if (enemyHealthContainer != null) enemyHealthContainer.SetActive(isActive);
+        if (enemyNameContainer != null) enemyNameContainer.SetActive(isActive);
+    }
+
+    public void SetEnemyName(string name)
+    {
+        if (enemyNameText != null)
         {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
+            enemyNameText.text = name;
         }
     }
 
-
     public void UpdatePlayerHealth(int current, int max)
     {
-        playerCurrentHealth = current;
-        playerMaxHealth = max;
-
-        if (playerHealthBar != null)
-        {
-            playerHealthBar.maxValue = playerMaxHealth;
-            playerHealthBar.value = playerCurrentHealth;
-        }
-        if (playerHealthText != null)
-        {
-            playerHealthText.text = playerCurrentHealth + " / " + playerMaxHealth;
-        }
+        if (playerHealthBar != null) { playerHealthBar.maxValue = max; playerHealthBar.value = current; }
+        if (playerHealthText != null) { playerHealthText.text = current + " / " + max; }
     }
 
     public void UpdateEnergy(int current, int max)
     {
-        currentEnergy = current;
-        maxEnergy = max;
-
-        if (energyBar != null)
-        {
-            energyBar.maxValue = maxEnergy;
-            energyBar.value = currentEnergy;
-        }
-        if (energyText != null)
-        {
-            energyText.text = currentEnergy + " / " + maxEnergy;
-        }
+        if (energyBar != null) { energyBar.maxValue = max; energyBar.value = current; }
+        if (energyText != null) { energyText.text = current + " / " + max; }
     }
-
 
     public void SetEnemyMaxHealth(int max)
     {
-        enemyMaxHealth = max;
-        enemyCurrentHealth = max; 
-
-        if (enemyHealthBar != null)
-        {
-            enemyHealthBar.maxValue = enemyMaxHealth;
-            enemyHealthBar.value = enemyCurrentHealth;
-        }
-        UpdateEnemyUI();
+        if (enemyHealthBar != null) { enemyHealthBar.maxValue = max; enemyHealthBar.value = max; }
+        UpdateEnemyUI(max, max);
     }
 
     public void UpdateEnemyHealth(int current)
     {
-        enemyCurrentHealth = current;
-        UpdateEnemyUI();
+        float max = (enemyHealthBar != null) ? enemyHealthBar.maxValue : 100;
+        UpdateEnemyUI(current, (int)max);
     }
 
-    private void UpdateEnemyUI()
+    private void UpdateEnemyUI(int current, int max)
     {
-        if (enemyHealthBar != null)
-        {
-            enemyHealthBar.value = enemyCurrentHealth;
-        }
-        if (enemyHealthText != null)
-        {
-            enemyHealthText.text = enemyCurrentHealth + " / " + enemyMaxHealth;
-        }
+        if (enemyHealthBar != null) enemyHealthBar.value = current;
+        if (enemyHealthText != null) enemyHealthText.text = current + " / " + max;
     }
 }

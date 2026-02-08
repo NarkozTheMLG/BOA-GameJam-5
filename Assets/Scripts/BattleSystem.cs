@@ -2,56 +2,80 @@ using UnityEngine;
 using System.Collections;      
 using UnityEngine.UI;          
 public enum BattleState { NONE,START, PLAYERTURN, ENEMYTURN, WON, LOST }
-
-   
-
+  
 public class BattleSystem : MonoBehaviour
 {
     [Header("UI & Player References")]
-    public GameObject battleUI;       
-    public PlayerMovement playerMovement; 
+    public GameObject battleUI;
+    public PlayerMovement playerMovement;
     public Transform playerTransform;
     public Transform enemyTransform;
 
     [Header("Current Battle Info")]
-    public Sickness Enemy; 
-    
-    public Sickness Schizophrenia; 
+    public Sickness Enemy;
+    public Sickness Schizophrenia;
     public Sickness Insomnia;
+    // Assuming you will have a Lactose sickness script later
+    // public Sickness Lactose; 
 
     [Header("Attack Prefabs")]
-    public GameObject schizophreniaPrefab; 
-    public GameObject insomniaPrefab;      
+    public GameObject schizophreniaPrefab;
+    public GameObject insomniaPrefab;
+    public GameObject lactosePrefab; // Add this if you have one
+
+    [Header("Visual Effects")]
+    public GameObject floatingTextPrefab;
+
+    [Header("Inventory Buttons")]
+    public Button schizophreniaButton;
+    public Button insomniaButton;
+    public Button lactoseButton; // NEW: Drag your Lactose Button here
+
+    // --- CACHED IMAGES ---
+    private Image schizoBtnImage;
+    private Image insomniaBtnImage;
+    private Image lactoseBtnImage; // NEW: Cache for Lactose
 
     [Header("Setup")]
     public Transform playerHand;
-
     public BattleState state;
-    private float defenseBonus;
-
-    private int playerMaxHealth = 100;
+    private int playerCurrentEnergy;
+    private int playerMaxEnergy = 5;
     private int playerCurrentHealth;
-
+    private int playerMaxHealth = 100;
+    private bool playerIsAsleep = false;
+    private bool enemyIsAsleep = false;
     void Start()
     {
         state = BattleState.NONE;
+
+        // Cache Images
+        if (schizophreniaButton != null) schizoBtnImage = schizophreniaButton.GetComponent<Image>();
+        if (insomniaButton != null) insomniaBtnImage = insomniaButton.GetComponent<Image>();
+        if (lactoseButton != null) lactoseBtnImage = lactoseButton.GetComponent<Image>();
+
+        if (HUDManager.Instance != null) HUDManager.Instance.ToggleBattleUI(false);
     }
 
     public void StartBattle(Sickness enemyFromWorld, Transform enemyTransFromWorld)
     {
         Enemy = enemyFromWorld;
         enemyTransform = enemyTransFromWorld;
-        
-        // 1. Setup UI
+
+        // Reset Sleep State
+        playerIsAsleep = false;
+        enemyIsAsleep = false;
+
         playerMovement.enabled = false;
         battleUI.SetActive(true);
+        HUDManager.Instance.ToggleBattleUI(true);
 
-        // 2. Initialize Player Health
+        if (Enemy != null) HUDManager.Instance.SetEnemyName(Enemy.sicknessName);
+
         playerCurrentHealth = playerMaxHealth;
         HUDManager.Instance.UpdatePlayerHealth(playerCurrentHealth, playerMaxHealth);
-
-        // 3. Initialize Enemy Health in HUD
-        // We use the Enemy stats directly
+        playerCurrentEnergy = playerMaxEnergy;
+        HUDManager.Instance.UpdateEnergy(playerCurrentEnergy, playerMaxEnergy);
         HUDManager.Instance.SetEnemyMaxHealth(Enemy.maxHealth);
         HUDManager.Instance.UpdateEnemyHealth(Enemy.currentHealth);
 
@@ -61,147 +85,46 @@ public class BattleSystem : MonoBehaviour
 
     void SetupBattle()
     {
+        CheckInventoryButtons(); // Updates transparency based on inventory
         state = BattleState.PLAYERTURN;
         PlayerTurn();
     }
 
-    void PlayerTurn()
+    void CheckInventoryButtons()
     {
-        state = BattleState.PLAYERTURN;
-        Debug.Log("Player's turn. Choose an action.");
+        // 1. Schizophrenia
+        bool hasSchizo = InventoryManager.Instance.HasItem("Schizophrenia");
+        if (schizophreniaButton != null)
+        {
+            schizophreniaButton.interactable = hasSchizo;
+            SetButtonAlpha(schizoBtnImage, hasSchizo);
+        }
+
+        // 2. Insomnia
+        bool hasInsomnia = InventoryManager.Instance.HasItem("Insomnia");
+        if (insomniaButton != null)
+        {
+            insomniaButton.interactable = hasInsomnia;
+            SetButtonAlpha(insomniaBtnImage, hasInsomnia);
+        }
+
+        // 3. Lactose (NEW)
+        bool hasLactose = InventoryManager.Instance.HasItem("Lactose");
+        if (lactoseButton != null)
+        {
+            lactoseButton.interactable = hasLactose;
+            SetButtonAlpha(lactoseBtnImage, hasLactose);
+        }
     }
 
-    public void ExecuteMove(string moveName) 
+    // Helper: Changes opacity efficiently using the cached image
+    void SetButtonAlpha(Image targetImage, bool isActive)
     {
-        defenseBonus = 0f; 
-        if (state != BattleState.PLAYERTURN) return;
+        if (targetImage == null) return;
 
-        GameObject prefabToUse = null;
-        int damageToDeal = 0;
-
-        if (moveName == "Skip")
-        {
-            Debug.Log("You Skipped! +3 Energy");
-            // Optional: HUDManager.Instance.getEnergy(3);
-            StartCoroutine(EnemyTurn()); 
-            return;
-        }
-        else if (moveName == "Defend")
-        {
-            Debug.Log("You Defended! +1 Energy");
-            defenseBonus = 0.50f;
-            // Optional: HUDManager.Instance.getEnergy(1);
-            StartCoroutine(EnemyTurn()); 
-            return;
-        }
-        else if(moveName == "Schizophrenia")
-        {
-            if (Schizophrenia != null)
-            {
-                damageToDeal = Schizophrenia.damage;
-                prefabToUse = schizophreniaPrefab;
-                state = BattleState.ENEMYTURN; // Lock input
-            }
-        }
-        else if (moveName == "Insomnia")
-        {
-            if (Insomnia != null)
-            {
-                damageToDeal = Insomnia.damage;
-                prefabToUse = insomniaPrefab;
-                state = BattleState.ENEMYTURN; // Lock input
-            }
-        }
-
-        // Spawn Projectile
-        if (prefabToUse != null)
-        {
-            GameObject projectile = Instantiate(prefabToUse, playerHand.position, Quaternion.identity);
-            AttackAnimation anim = projectile.GetComponent<AttackAnimation>();
-            if (anim != null) anim.Seek(Enemy.transform);
-        }
-
-        // Process Damage
-        StartCoroutine(ProcessAttack(damageToDeal, 0.8f)); 
-    }
-
-    IEnumerator ProcessAttack(int damage, float delay)
-    {
-        yield return new WaitForSeconds(delay);
-
-        if (Enemy != null)
-        {
-            // A. Apply Damage
-            Enemy.TakeDamage(damage);
-
-            // B. UPDATE HUD (Enemy Health)
-            HUDManager.Instance.UpdateEnemyHealth(Enemy.currentHealth);
-            
-            if (Enemy.isDead)
-            {
-                state = BattleState.WON;
-                BattleWon();
-                yield break;
-            }
-        }
-        
-        yield return new WaitForSeconds(0.1f);
-        StartCoroutine(EnemyTurn());
-    }
-
-    IEnumerator EnemyTurn()
-    {
-        state = BattleState.ENEMYTURN;
-        GameObject prefabToUse = null;
-        
-        float waitTime = Random.Range(0.5f, 1.5f); 
-        yield return new WaitForSeconds(waitTime);
-
-        Debug.Log("Enemy attacks!");
-        
-        if (Enemy != null)
-        {
-            // Visuals
-            if(Enemy.sicknessName == "Schizophrenia") prefabToUse = schizophreniaPrefab;
-            else if(Enemy.sicknessName == "Insomnia") prefabToUse = insomniaPrefab;
-            
-            if (prefabToUse != null)
-            {
-                GameObject projectile = Instantiate(prefabToUse, enemyTransform.position, Quaternion.identity);
-                AttackAnimation anim = projectile.GetComponent<AttackAnimation>();
-                if (anim != null) anim.Seek(playerTransform);
-            }
-
-            yield return new WaitForSeconds(0.5f); // Wait for hit
-
-            // --- LOGIC: DEAL DAMAGE TO PLAYER ---
-            
-            // 1. Calculate Damage (Enemy damage minus defense)
-            int incomingDamage = Enemy.damage;
-            if (defenseBonus > 0) incomingDamage = Mathf.RoundToInt(incomingDamage * (1 - defenseBonus));
-
-            // 2. Apply to Player
-            playerCurrentHealth -= incomingDamage;
-            if (playerCurrentHealth < 0) playerCurrentHealth = 0;
-
-            // 3. UPDATE HUD (Player Health)
-            HUDManager.Instance.UpdatePlayerHealth(playerCurrentHealth, playerMaxHealth);
-
-            // 4. Check Player Death
-            if (playerCurrentHealth <= 0)
-            {
-                state = BattleState.LOST;
-                Debug.Log("Player Died!");
-                // Handle Game Over here
-            }
-
-            Enemy.Attack(); // Just logs the message
-        }
-
-        yield return new WaitForSeconds(0.5f);
-        
-        if (state != BattleState.LOST)
-            PlayerTurn();
+        Color c = targetImage.color;
+        c.a = isActive ? 1f : 0.5f; // 100% or 50% visible
+        targetImage.color = c;
     }
 
     void BattleWon()
@@ -210,12 +133,261 @@ public class BattleSystem : MonoBehaviour
         {
             if (Enemy != null)
             {
+                InventoryManager.Instance.AddItem(Enemy.sicknessName, 1);
                 Destroy(Enemy.gameObject);
                 Enemy = null;
             }
             enemyTransform = null;
             battleUI.SetActive(false);
+            HUDManager.Instance.ToggleBattleUI(false);
             playerMovement.enabled = true;
         }
+    }
+    void PlayerTurn()
+    {
+        state = BattleState.PLAYERTURN;
+
+        // 1. Check if Player is Asleep
+        if (playerIsAsleep)
+        {
+            Debug.Log("Zzz... You are asleep and skipped a turn!");
+            playerIsAsleep = false; // Wake up for next time
+            StartCoroutine(EnemyTurn()); // Skip directly to enemy
+            return;
+        }
+
+        Debug.Log("Player's turn. Choose an action.");
+    }
+
+    public void ExecuteMove(string moveName)
+    {
+        if (state != BattleState.PLAYERTURN) return;
+        if (moveName == "Schizophrenia")
+        {
+            if (Schizophrenia != null && playerCurrentEnergy < Schizophrenia.energyCost) return;
+            if (Random.value <= 0.33f)
+            {
+                Debug.Log("Schizo Attack Failed!");
+                LoseEnergy(Schizophrenia.energyCost);
+                StartCoroutine(ShowTextDelayed("What!?...", playerTransform, 0.5f));
+                StartCoroutine(SkipTurnDelay(1f));
+                return; 
+            }
+        }
+        GameObject prefabToUse = null;
+        int damageToDeal = 0;
+
+        if (moveName == "Skip")
+        {
+            Debug.Log("You Skipped! +3 Energy");
+            GainEnergy(3);
+            StartCoroutine(EnemyTurn());
+            return;
+        }
+        else if (moveName == "Defend")
+        {
+            Debug.Log("You Defended! +1 Energy, +5 HP");
+            GainEnergy(1);
+            HealPlayer(5);
+            StartCoroutine(EnemyTurn());
+            return;
+        }
+        else if (moveName == "Schizophrenia")
+        {
+            if (Schizophrenia != null)
+            {
+                if (playerCurrentEnergy < Schizophrenia.energyCost) return;
+                LoseEnergy(Schizophrenia.energyCost);
+                damageToDeal = Schizophrenia.damage;
+                prefabToUse = schizophreniaPrefab;
+                state = BattleState.ENEMYTURN;
+            }
+        }
+        else if (moveName == "Insomnia")
+        {
+            if (Insomnia != null)
+            {
+                if (playerCurrentEnergy < Insomnia.energyCost) return;
+                LoseEnergy(Insomnia.energyCost);
+
+                damageToDeal = Insomnia.damage;
+                prefabToUse = insomniaPrefab;
+                state = BattleState.ENEMYTURN;
+
+                // --- LOGIC: MAKE ENEMY SLEEP ---
+                // 25% Chance the Enemy falls asleep
+                if (Random.value <= 0.25f)
+                {
+                    Debug.Log("INSOMNIA EFFECT: Enemy fell asleep!");
+                    enemyIsAsleep = true;
+                    StartCoroutine(ShowTextDelayed("Zzz...", Enemy.transform, 0.8f));
+                }
+            }
+        }
+
+        if (prefabToUse != null)
+        {
+            GameObject projectile = Instantiate(prefabToUse, playerHand.position, Quaternion.identity);
+            AttackAnimation anim = projectile.GetComponent<AttackAnimation>();
+            if (anim != null) anim.Seek(Enemy.transform);
+        }
+
+        StartCoroutine(ProcessAttack(damageToDeal, 0.8f));
+    }
+
+    // --- HELPER METHODS ---
+
+    public void GainEnergy(int amount)
+    {
+        playerCurrentEnergy += amount;
+        if (playerCurrentEnergy > playerMaxEnergy)
+            playerCurrentEnergy = playerMaxEnergy;
+
+        HUDManager.Instance.UpdateEnergy(playerCurrentEnergy, playerMaxEnergy);
+    }
+
+    // NEW: Helper to remove energy
+    public void LoseEnergy(int amount)
+    {
+        playerCurrentEnergy -= amount;
+        if (playerCurrentEnergy < 0)
+            playerCurrentEnergy = 0;
+
+        HUDManager.Instance.UpdateEnergy(playerCurrentEnergy, playerMaxEnergy);
+    }
+
+    public void HealPlayer(int amount)
+    {
+        playerCurrentHealth += amount;
+        if (playerCurrentHealth > playerMaxHealth)
+            playerCurrentHealth = playerMaxHealth;
+
+        HUDManager.Instance.UpdatePlayerHealth(playerCurrentHealth, playerMaxHealth);
+    }
+
+    // ---------------------------
+
+    IEnumerator ProcessAttack(int damage, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (Enemy != null)
+        {
+            Enemy.TakeDamage(damage);
+            HUDManager.Instance.UpdateEnemyHealth(Enemy.currentHealth);
+
+            if (Enemy.isDead)
+            {
+                state = BattleState.WON;
+                BattleWon();
+                yield break;
+            }
+        }
+        yield return new WaitForSeconds(0.1f);
+        StartCoroutine(EnemyTurn());
+    }
+
+    IEnumerator EnemyTurn()
+    {
+        state = BattleState.ENEMYTURN;
+
+        // Check Sleep
+        if (enemyIsAsleep)
+        {
+            Debug.Log("Enemy is sleeping...");
+            yield return new WaitForSeconds(1f);
+            enemyIsAsleep = false;
+            PlayerTurn();
+            yield break;
+        }
+
+        float waitTime = Random.Range(0.5f, 1.5f);
+        yield return new WaitForSeconds(waitTime);
+
+        // --- 2. SCHIZOPHRENIA FAIL CHECK (33% Chance) ---
+        if (Enemy != null && Enemy.sicknessName == "Schizophrenia")
+        {
+            if (Random.value <= 0.33f)
+            {
+                Debug.Log("Enemy Schizo Missed!");
+                StartCoroutine(ShowTextDelayed("What!?...", enemyTransform, 0.5f));
+
+                yield return new WaitForSeconds(1f); // Wait a bit
+                PlayerTurn(); // Give turn back to player
+                yield break; // STOP HERE!
+            }
+        }
+        // --------------------------------------------------
+
+        Debug.Log("Enemy attacks!");
+        GameObject prefabToUse = null;
+
+        if (Enemy != null)
+        {
+            if (Enemy.sicknessName == "Schizophrenia") prefabToUse = schizophreniaPrefab;
+            else if (Enemy.sicknessName == "Insomnia")
+            {
+                prefabToUse = insomniaPrefab;
+
+                // 25% Chance Player Sleeps
+                if (Random.value <= 0.25f)
+                {
+                    playerIsAsleep = true;
+                    StartCoroutine(ShowTextDelayed("Zzz...", playerTransform, 0.5f));
+                }
+            }
+
+            if (prefabToUse != null)
+            {
+                GameObject projectile = Instantiate(prefabToUse, enemyTransform.position, Quaternion.identity);
+                AttackAnimation anim = projectile.GetComponent<AttackAnimation>();
+                if (anim != null) anim.Seek(playerTransform);
+            }
+
+            yield return new WaitForSeconds(0.5f);
+
+            // Deal Damage
+            int incomingDamage = Enemy.damage;
+            playerCurrentHealth -= incomingDamage;
+            if (playerCurrentHealth < 0) playerCurrentHealth = 0;
+
+            HUDManager.Instance.UpdatePlayerHealth(playerCurrentHealth, playerMaxHealth);
+
+            if (playerCurrentHealth <= 0)
+            {
+                state = BattleState.LOST;
+            }
+
+            Enemy.Attack();
+        }
+
+        yield return new WaitForSeconds(0.5f);
+
+        if (state != BattleState.LOST)
+            PlayerTurn();
+    }
+
+    // NEW: Coroutine to delay the text
+    IEnumerator ShowTextDelayed(string message, Transform target, float delay)
+    {
+        // 1. Wait for the animation (projectile flying)
+        yield return new WaitForSeconds(delay);
+
+        // 2. Spawn the text
+        if (floatingTextPrefab != null && target != null)
+        {
+            GameObject go = Instantiate(floatingTextPrefab, target.position, Quaternion.identity);
+
+            FloatingText ft = go.GetComponent<FloatingText>();
+            if (ft != null)
+            {
+                ft.SetText(message);
+            }
+        }
+    }
+    IEnumerator SkipTurnDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        StartCoroutine(EnemyTurn());
     }
 }
