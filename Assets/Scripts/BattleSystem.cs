@@ -3,49 +3,64 @@ using System.Collections;
 using UnityEngine.UI;          
 public enum BattleState { NONE,START, PLAYERTURN, ENEMYTURN, WON, LOST }
 
+   
+
 public class BattleSystem : MonoBehaviour
 {
- [Header("UI & Player References")]
+    [Header("UI & Player References")]
     public GameObject battleUI;       
-    public PlayerMovement playerMovement;
+    public PlayerMovement playerMovement; 
     public Transform playerTransform;
-        public Transform enemyTransform;
+    public Transform enemyTransform;
+
     [Header("Current Battle Info")]
     public Sickness Enemy; 
-    public Sickness Schizophrenia;
+    
+    public Sickness Schizophrenia; 
     public Sickness Insomnia;
 
-[Header("Attack Prefabs")]
+    [Header("Attack Prefabs")]
     public GameObject schizophreniaPrefab; 
     public GameObject insomniaPrefab;      
 
     [Header("Setup")]
     public Transform playerHand;
 
-
     public BattleState state;
-
     private float defenseBonus;
 
+    private int playerMaxHealth = 100;
+    private int playerCurrentHealth;
 
     void Start()
     {
         state = BattleState.NONE;
     }
-public void StartBattle(Sickness enemyFromWorld, Transform enemyTransFromWorld)
+
+    public void StartBattle(Sickness enemyFromWorld, Transform enemyTransFromWorld)
     {
         Enemy = enemyFromWorld;
         enemyTransform = enemyTransFromWorld;
+        
+        // 1. Setup UI
         playerMovement.enabled = false;
         battleUI.SetActive(true);
+
+        // 2. Initialize Player Health
+        playerCurrentHealth = playerMaxHealth;
+        HUDManager.Instance.UpdatePlayerHealth(playerCurrentHealth, playerMaxHealth);
+
+        // 3. Initialize Enemy Health in HUD
+        // We use the Enemy stats directly
+        HUDManager.Instance.SetEnemyMaxHealth(Enemy.maxHealth);
+        HUDManager.Instance.UpdateEnemyHealth(Enemy.currentHealth);
 
         state = BattleState.START;
         SetupBattle();
     }
+
     void SetupBattle()
     {
-        // klavye kontrollerini kapat 
-        // UIları görünür yap
         state = BattleState.PLAYERTURN;
         PlayerTurn();
     }
@@ -56,7 +71,7 @@ public void StartBattle(Sickness enemyFromWorld, Transform enemyTransFromWorld)
         Debug.Log("Player's turn. Choose an action.");
     }
 
-public void ExecuteMove(string moveName) 
+    public void ExecuteMove(string moveName) 
     {
         defenseBonus = 0f; 
         if (state != BattleState.PLAYERTURN) return;
@@ -67,6 +82,7 @@ public void ExecuteMove(string moveName)
         if (moveName == "Skip")
         {
             Debug.Log("You Skipped! +3 Energy");
+            // Optional: HUDManager.Instance.getEnergy(3);
             StartCoroutine(EnemyTurn()); 
             return;
         }
@@ -74,43 +90,38 @@ public void ExecuteMove(string moveName)
         {
             Debug.Log("You Defended! +1 Energy");
             defenseBonus = 0.50f;
+            // Optional: HUDManager.Instance.getEnergy(1);
             StartCoroutine(EnemyTurn()); 
             return;
         }
         else if(moveName == "Schizophrenia")
         {
-            if (Schizophrenia == null)
+            if (Schizophrenia != null)
             {
-                Debug.LogError("Schizophrenia move reference is missing or destroyed.");
-                return;
+                damageToDeal = Schizophrenia.damage;
+                prefabToUse = schizophreniaPrefab;
+                state = BattleState.ENEMYTURN; // Lock input
             }
-            damageToDeal = Schizophrenia.damage;
-            prefabToUse = schizophreniaPrefab;
-            state = BattleState.ENEMYTURN;
         }
         else if (moveName == "Insomnia")
         {
-            if (Insomnia == null)
+            if (Insomnia != null)
             {
-                Debug.LogError("Insomnia move reference is missing or destroyed.");
-                return;
+                damageToDeal = Insomnia.damage;
+                prefabToUse = insomniaPrefab;
+                state = BattleState.ENEMYTURN; // Lock input
             }
-            damageToDeal = Insomnia.damage;
-            prefabToUse = insomniaPrefab;
-            state = BattleState.ENEMYTURN;
         }
 
+        // Spawn Projectile
         if (prefabToUse != null)
         {
             GameObject projectile = Instantiate(prefabToUse, playerHand.position, Quaternion.identity);
             AttackAnimation anim = projectile.GetComponent<AttackAnimation>();
-            
-            if (anim != null)
-            {
-                anim.Seek(Enemy.transform);
-            }
+            if (anim != null) anim.Seek(Enemy.transform);
         }
 
+        // Process Damage
         StartCoroutine(ProcessAttack(damageToDeal, 0.8f)); 
     }
 
@@ -120,7 +131,11 @@ public void ExecuteMove(string moveName)
 
         if (Enemy != null)
         {
+            // A. Apply Damage
             Enemy.TakeDamage(damage);
+
+            // B. UPDATE HUD (Enemy Health)
+            HUDManager.Instance.UpdateEnemyHealth(Enemy.currentHealth);
             
             if (Enemy.isDead)
             {
@@ -129,11 +144,12 @@ public void ExecuteMove(string moveName)
                 yield break;
             }
         }
-                yield return new WaitForSeconds(0.1f);
+        
+        yield return new WaitForSeconds(0.1f);
         StartCoroutine(EnemyTurn());
     }
 
-  IEnumerator EnemyTurn()
+    IEnumerator EnemyTurn()
     {
         state = BattleState.ENEMYTURN;
         GameObject prefabToUse = null;
@@ -145,34 +161,53 @@ public void ExecuteMove(string moveName)
         
         if (Enemy != null)
         {
-            if(Enemy.sicknessName == "Schizophrenia")
-                prefabToUse = schizophreniaPrefab;
-            else if(Enemy.sicknessName == "Insomnia")
-                prefabToUse = insomniaPrefab;
-        if (prefabToUse != null)
-        {
-            GameObject projectile = Instantiate(prefabToUse, enemyTransform.position, Quaternion.identity);
-            AttackAnimation anim = projectile.GetComponent<AttackAnimation>();
+            // Visuals
+            if(Enemy.sicknessName == "Schizophrenia") prefabToUse = schizophreniaPrefab;
+            else if(Enemy.sicknessName == "Insomnia") prefabToUse = insomniaPrefab;
             
-            if (anim != null)
+            if (prefabToUse != null)
             {
-                anim.Seek(playerTransform);
+                GameObject projectile = Instantiate(prefabToUse, enemyTransform.position, Quaternion.identity);
+                AttackAnimation anim = projectile.GetComponent<AttackAnimation>();
+                if (anim != null) anim.Seek(playerTransform);
             }
 
-        }
-                yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.5f); // Wait for hit
 
-             Enemy.Attack(); 
-        }
-                    yield return new WaitForSeconds(0.1f);
+            // --- LOGIC: DEAL DAMAGE TO PLAYER ---
+            
+            // 1. Calculate Damage (Enemy damage minus defense)
+            int incomingDamage = Enemy.damage;
+            if (defenseBonus > 0) incomingDamage = Mathf.RoundToInt(incomingDamage * (1 - defenseBonus));
 
-        PlayerTurn();
+            // 2. Apply to Player
+            playerCurrentHealth -= incomingDamage;
+            if (playerCurrentHealth < 0) playerCurrentHealth = 0;
+
+            // 3. UPDATE HUD (Player Health)
+            HUDManager.Instance.UpdatePlayerHealth(playerCurrentHealth, playerMaxHealth);
+
+            // 4. Check Player Death
+            if (playerCurrentHealth <= 0)
+            {
+                state = BattleState.LOST;
+                Debug.Log("Player Died!");
+                // Handle Game Over here
+            }
+
+            Enemy.Attack(); // Just logs the message
+        }
+
+        yield return new WaitForSeconds(0.5f);
+        
+        if (state != BattleState.LOST)
+            PlayerTurn();
     }
 
     void BattleWon()
-{
-    if (state == BattleState.WON)
     {
+        if (state == BattleState.WON)
+        {
             if (Enemy != null)
             {
                 Destroy(Enemy.gameObject);
@@ -180,7 +215,7 @@ public void ExecuteMove(string moveName)
             }
             enemyTransform = null;
             battleUI.SetActive(false);
-        playerMovement.enabled = true;
+            playerMovement.enabled = true;
+        }
     }
-}
 }

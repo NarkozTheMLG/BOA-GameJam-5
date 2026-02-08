@@ -3,150 +3,100 @@ using UnityEngine.UI;
 
 public class HUDManager : MonoBehaviour
 {
-
     public static HUDManager Instance { get; private set; }
 
-    [Header("Health")]
-    [SerializeField] private Text healthText;
+    [Header("Player UI")]
+    [SerializeField] private Text playerHealthText;
+    [SerializeField] private Slider playerHealthBar;
     [SerializeField] private Text energyText;
-
-    [SerializeField] private Slider healthBar;
     [SerializeField] private Slider energyBar;
 
+    [Header("Enemy UI")]
+    [SerializeField] private Slider enemyHealthBar;
+    [SerializeField] private Text enemyHealthText;
 
-
-    private int currentHealth = 100;
-    private int maxHealth = 100;
+    private int playerCurrentHealth = 100;
+    private int playerMaxHealth = 100;
     private int currentEnergy = 5;
     private int maxEnergy = 5;
 
+    private int enemyCurrentHealth;
+    private int enemyMaxHealth;
 
     void Awake()
     {
-       
-
-        Debug.Log("HUD Awake çalýþtý: " + gameObject.name);
-
         if (Instance == null)
         {
-            Debug.Log("HUD Singleton atandý");
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
-            Debug.Log("HUD ZATEN VAR, bu siliniyor");
             Destroy(gameObject);
-            return;
         }
     }
-    void Start()
+
+
+    public void UpdatePlayerHealth(int current, int max)
     {
-        if (healthBar != null)
+        playerCurrentHealth = current;
+        playerMaxHealth = max;
+
+        if (playerHealthBar != null)
         {
-            healthBar.maxValue = maxHealth;
-            healthBar.value = currentHealth;
+            playerHealthBar.maxValue = playerMaxHealth;
+            playerHealthBar.value = playerCurrentHealth;
         }
+        if (playerHealthText != null)
+        {
+            playerHealthText.text = playerCurrentHealth + " / " + playerMaxHealth;
+        }
+    }
+
+    public void UpdateEnergy(int current, int max)
+    {
+        currentEnergy = current;
+        maxEnergy = max;
 
         if (energyBar != null)
         {
             energyBar.maxValue = maxEnergy;
             energyBar.value = currentEnergy;
         }
-        UpdateBars();
-
-
-    }
-
-    public void UpdateEnergy(int newEnergy)
-    {
-        currentEnergy = Mathf.Clamp(newEnergy, 0, maxEnergy);
-        UpdateBars();
-
-    }
-
-    public void UpdateHealth(int newHealth)
-    {
-        currentHealth = Mathf.Clamp(newHealth, 0, maxHealth);
-        UpdateBars();
-
-    }
-
-    public void getEnergy(int amount)
-    {
-        currentEnergy += amount;
-        UpdateEnergy(currentEnergy);
-    }
-    public void lostEnergy(int amount)
-    {
-        currentEnergy -= amount;
-        UpdateEnergy(currentEnergy);
-    }
-
-    public void TakeDamage(int damage)
-    {
-        currentHealth -= damage;
-        UpdateHealth(currentHealth);
-    }
-
-    public void Heal(int amount)
-    {
-        currentHealth += amount;
-        UpdateHealth(currentHealth);
-    }
-
- 
-
- 
-
-    private void UpdateBars()
-    {
-        if (healthText != null)
-        {
-            healthText.text = currentHealth + " / " + maxHealth;
-        }
-        if (healthBar != null)
-        {
-            healthBar.value = currentHealth;
-        }
-        if(energyText != null)
+        if (energyText != null)
         {
             energyText.text = currentEnergy + " / " + maxEnergy;
         }
-        if (energyBar != null)
-        {
-            energyBar.value = currentEnergy;
-        }
     }
 
-   
 
-    // Test için (silebilirsiniz)
-    void Update()
+    public void SetEnemyMaxHealth(int max)
     {
-        // K tuþu ile hasar test
-        if (Input.GetKeyDown(KeyCode.K))
+        enemyMaxHealth = max;
+        enemyCurrentHealth = max; 
+
+        if (enemyHealthBar != null)
         {
-            TakeDamage(10);
+            enemyHealthBar.maxValue = enemyMaxHealth;
+            enemyHealthBar.value = enemyCurrentHealth;
         }
+        UpdateEnemyUI();
+    }
 
-        // L tuþu ile can test
-        if (Input.GetKeyDown(KeyCode.L))
+    public void UpdateEnemyHealth(int current)
+    {
+        enemyCurrentHealth = current;
+        UpdateEnemyUI();
+    }
+
+    private void UpdateEnemyUI()
+    {
+        if (enemyHealthBar != null)
         {
-            Heal(10);
+            enemyHealthBar.value = enemyCurrentHealth;
         }
-
-        if (Input.GetKeyDown(KeyCode.I))
+        if (enemyHealthText != null)
         {
-            lostEnergy(1);
+            enemyHealthText.text = enemyCurrentHealth + " / " + enemyMaxHealth;
         }
-
-        // L tuþu ile can test
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            getEnergy(1);
-        }
-
-
     }
 }
