@@ -2,30 +2,33 @@ using UnityEngine;
 
 public class Sickness : MonoBehaviour
 {
-   public string sicknessName;
-   public int maxHealth;
-   public int currentHealth; // BattleSystem reads this for HUD
-   public int damage;
-   public int level;
-   public bool isDead;
-
-   public virtual void Attack(){
-        Debug.Log($"{sicknessName} attacks with {damage} damage!");
-   }
+    public string sicknessName;
+    public int maxHealth;
+    public int currentHealth;
+    public int damage;
+    public int energyCost = 1;
+    public int level;
+    public bool isDead;
 
     void Start()
     {
         isDead = false;
-        // Ensure health is set on spawn
-        if(currentHealth == 0) currentHealth = maxHealth; 
+        if (currentHealth == 0) currentHealth = maxHealth;
     }
 
-    public void TakeDamage(int damageAmount)
+    // CHANGED: Returns 'bool' now. 
+    // Returns TRUE if attack happens, FALSE if it fails (skips turn).
+    public virtual bool Attack()
     {
-        currentHealth -= damageAmount;
-        if (currentHealth < 0) currentHealth = 0;
+        Debug.Log($"{sicknessName} attacks with {damage} damage!");
+        return true; // Default behavior: Always attack successfully
+    }
 
-        Debug.Log(gameObject.name + " HP: " + currentHealth);
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        if (currentHealth < 0) currentHealth = 0;
+        // Debug.Log(gameObject.name + " took " + damage + " damage. HP: " + currentHealth);
 
         if (currentHealth <= 0)
             Die();
@@ -34,5 +37,6 @@ public class Sickness : MonoBehaviour
     void Die()
     {
         isDead = true;
+        Debug.Log(gameObject.name + " died!");
     }
 }

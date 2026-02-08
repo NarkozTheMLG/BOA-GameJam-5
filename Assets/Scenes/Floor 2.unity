@@ -245,9 +245,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fccbc2adf2d617541988c7330014bf3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorInteract
-  creaturePrefab: {fileID: 7634851667254130161, guid: 830f8b68e398d904295912bb235f4072, type: 3}
-  roomSceneName: Combat
-  doorID: Door3
+  creaturePrefab: {fileID: 0}
+  roomSceneName: RoomID
+  doorID: RoomID
 --- !u!61 &70779924
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2468,12 +2468,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1df7bfbdf8b55847b73c2d42056ca4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HUDManager
+  energyContainer: {fileID: 0}
+  enemyHealthContainer: {fileID: 0}
+  enemyNameContainer: {fileID: 0}
   playerHealthText: {fileID: 0}
   playerHealthBar: {fileID: 0}
   energyText: {fileID: 392527125}
   energyBar: {fileID: 1284492668}
   enemyHealthBar: {fileID: 0}
   enemyHealthText: {fileID: 0}
+  enemyNameText: {fileID: 0}
 --- !u!1 &1089957537
 GameObject:
   m_ObjectHideFlags: 0
@@ -4397,6 +4401,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b6db63722b6c24790560edded53ae5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  hasIDCard: 0
   currentCreaturePrefab: {fileID: 0}
   lastDoorID: 
 --- !u!4 &1953370434
