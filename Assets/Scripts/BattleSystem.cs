@@ -1,6 +1,7 @@
 using UnityEngine;             
 using System.Collections;      
 using UnityEngine.UI;          
+
 public enum BattleState { NONE,START, PLAYERTURN, ENEMYTURN, WON, LOST }
 
 public class BattleSystem : MonoBehaviour
@@ -15,8 +16,7 @@ public class BattleSystem : MonoBehaviour
     public Sickness Enemy;
     public Sickness Schizophrenia;
     public Sickness Insomnia;
-    // UNCOMMENTED THIS so you can drag the script here
-    public Sickness Lactose;
+    public Sickness Lactose; 
 
     [Header("Attack Prefabs")]
     public GameObject schizophreniaPrefab;
@@ -68,7 +68,8 @@ public class BattleSystem : MonoBehaviour
         enemyIsAsleep = false;
 
         playerMovement.enabled = false;
-        battleUI.SetActive(true);
+        
+        battleUI.SetActive(true); 
         HUDManager.Instance.ToggleBattleUI(true);
 
         if (AudioManager.Instance != null)
@@ -80,8 +81,10 @@ public class BattleSystem : MonoBehaviour
 
         playerCurrentHealth = playerMaxHealth;
         HUDManager.Instance.UpdatePlayerHealth(playerCurrentHealth, playerMaxHealth);
+        
         playerCurrentEnergy = playerMaxEnergy;
         HUDManager.Instance.UpdateEnergy(playerCurrentEnergy, playerMaxEnergy);
+        
         HUDManager.Instance.SetEnemyMaxHealth(Enemy.maxHealth);
         HUDManager.Instance.UpdateEnemyHealth(Enemy.currentHealth);
 
@@ -91,35 +94,47 @@ public class BattleSystem : MonoBehaviour
 
     void SetupBattle()
     {
-        CheckInventoryButtons();
+        // Update buttons initially
+        UpdateButtonStates();
         state = BattleState.PLAYERTURN;
         PlayerTurn();
     }
 
-    void CheckInventoryButtons()
+    // --- NEW: CHECKS BOTH INVENTORY AND ENERGY ---
+    void UpdateButtonStates()
     {
         // 1. Schizophrenia
-        bool hasSchizo = InventoryManager.Instance.HasItem("Schizophrenia");
+        bool hasSchizoItem = InventoryManager.Instance.HasItem("Schizophrenia");
+        bool hasSchizoEnergy = (Schizophrenia != null && playerCurrentEnergy >= Schizophrenia.energyCost);
+        
         if (schizophreniaButton != null)
         {
-            schizophreniaButton.interactable = hasSchizo;
-            SetButtonAlpha(schizoBtnImage, hasSchizo);
+            // Must have Item AND Energy to click
+            bool interactable = hasSchizoItem && hasSchizoEnergy;
+            schizophreniaButton.interactable = interactable;
+            SetButtonAlpha(schizoBtnImage, interactable);
         }
 
         // 2. Insomnia
-        bool hasInsomnia = InventoryManager.Instance.HasItem("Insomnia");
+        bool hasInsomniaItem = InventoryManager.Instance.HasItem("Insomnia");
+        bool hasInsomniaEnergy = (Insomnia != null && playerCurrentEnergy >= Insomnia.energyCost);
+        
         if (insomniaButton != null)
         {
-            insomniaButton.interactable = hasInsomnia;
-            SetButtonAlpha(insomniaBtnImage, hasInsomnia);
+            bool interactable = hasInsomniaItem && hasInsomniaEnergy;
+            insomniaButton.interactable = interactable;
+            SetButtonAlpha(insomniaBtnImage, interactable);
         }
 
         // 3. Lactose
-        bool hasLactose = InventoryManager.Instance.HasItem("Lactose");
+        bool hasLactoseItem = InventoryManager.Instance.HasItem("Lactose");
+        bool hasLactoseEnergy = (Lactose != null && playerCurrentEnergy >= Lactose.energyCost);
+
         if (lactoseButton != null)
         {
-            lactoseButton.interactable = hasLactose;
-            SetButtonAlpha(lactoseBtnImage, hasLactose);
+            bool interactable = hasLactoseItem && hasLactoseEnergy;
+            lactoseButton.interactable = interactable;
+            SetButtonAlpha(lactoseBtnImage, interactable);
         }
     }
 
@@ -159,22 +174,32 @@ public class BattleSystem : MonoBehaviour
         if (playerIsAsleep)
         {
             Debug.Log("Zzz... You are asleep and skipped a turn!");
+            battleUI.SetActive(false); 
             playerIsAsleep = false;
             StartCoroutine(EnemyTurn());
             return;
         }
 
         Debug.Log("Player's turn. Choose an action.");
+        
+        // Show UI and Refresh Buttons based on current Energy
+        battleUI.SetActive(true); 
+        UpdateButtonStates(); 
     }
 
     public void ExecuteMove(string moveName)
     {
         if (state != BattleState.PLAYERTURN) return;
 
+        // Hide UI immediately so player can't click twice
+        battleUI.SetActive(false);
+
         // --- SCHIZOPHRENIA CHECK ---
         if (moveName == "Schizophrenia")
         {
+            // Extra safety check in case they somehow clicked it
             if (Schizophrenia != null && playerCurrentEnergy < Schizophrenia.energyCost) return;
+
             if (Random.value <= 0.33f)
             {
                 Debug.Log("Schizo Attack Failed!");
@@ -231,7 +256,6 @@ public class BattleSystem : MonoBehaviour
                 }
             }
         }
-        // --- NEW: LACTOSE LOGIC ---
         else if (moveName == "Lactose")
         {
             if (Lactose != null)
@@ -244,7 +268,6 @@ public class BattleSystem : MonoBehaviour
                 state = BattleState.ENEMYTURN;
             }
         }
-        // --------------------------
 
         if (prefabToUse != null)
         {
@@ -261,6 +284,9 @@ public class BattleSystem : MonoBehaviour
         playerCurrentEnergy += amount;
         if (playerCurrentEnergy > playerMaxEnergy) playerCurrentEnergy = playerMaxEnergy;
         HUDManager.Instance.UpdateEnergy(playerCurrentEnergy, playerMaxEnergy);
+        
+        // Refresh buttons (in case we gained enough energy to use a move)
+        UpdateButtonStates(); 
     }
 
     public void LoseEnergy(int amount)
@@ -268,6 +294,9 @@ public class BattleSystem : MonoBehaviour
         playerCurrentEnergy -= amount;
         if (playerCurrentEnergy < 0) playerCurrentEnergy = 0;
         HUDManager.Instance.UpdateEnergy(playerCurrentEnergy, playerMaxEnergy);
+        
+        // Refresh buttons (buttons will dim if energy drops too low)
+        UpdateButtonStates();
     }
 
     public void HealPlayer(int amount)
@@ -344,12 +373,10 @@ public class BattleSystem : MonoBehaviour
                     StartCoroutine(ShowTextDelayed("Zzz...", playerTransform, 0.5f));
                 }
             }
-            // --- NEW: LACTOSE ENEMY LOGIC ---
             else if (Enemy.sicknessName == "Lactose")
             {
                 prefabToUse = lactosePrefab;
             }
-            // --------------------------------
 
             if (prefabToUse != null)
             {

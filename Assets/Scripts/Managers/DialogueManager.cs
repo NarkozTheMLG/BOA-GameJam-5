@@ -8,15 +8,19 @@ public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance;
 
-    [Header("UI Components")]
-    public GameObject dialogueBox;      // The whole background panel
-    public Image portraitImage;         // The Image on the left
-    public TextMeshProUGUI nameText;    // Name text above message
-    public TextMeshProUGUI dialogueText;// The actual message
+    [Header("Prefab Settings")]
+    public GameObject dialogueBoxPrefab; // Drag your PREFAB here (from the Project folder)
+
+    // Private variables to hold the created object and its parts
+    private GameObject currentDialogueBox;
+    private Image portraitImage;
+    private TextMeshProUGUI nameText;
+    private TextMeshProUGUI dialogueText;
 
     private Queue<DialogueLine> sentences;
     private bool isTyping = false;
     private string currentFullSentence = "";
+    private bool isDialogueActive = false;
 
     void Awake()
     {
@@ -24,25 +28,40 @@ public class DialogueManager : MonoBehaviour
         sentences = new Queue<DialogueLine>();
     }
 
-    void Start()
-    {
-        dialogueBox.SetActive(false); 
-    }
-
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        // Only listen for clicks if dialogue is active AND the box exists
+        if (isDialogueActive && Input.GetMouseButtonDown(0))
         {
-            Debug.Log("Iclickled!!!");
             DisplayNextSentence();
         }
     }
 
     public void StartDialogue(Dialogue dialogue)
     {
-        dialogueBox.SetActive(true);
-        sentences.Clear();
+        // 1. Create the Box from the Prefab
+        if (currentDialogueBox != null) Destroy(currentDialogueBox); // Safety cleanup
+        
+        currentDialogueBox = Instantiate(dialogueBoxPrefab);
+        isDialogueActive = true;
 
+        // 2. Find the UI parts inside the new box automatically
+        // We use the exact names from your screenshot: "Canvas/Portrait", etc.
+        Transform canvas = currentDialogueBox.transform.Find("Canvas");
+
+        if (canvas != null)
+        {
+            portraitImage = canvas.Find("Portrait").GetComponent<Image>();
+            nameText = canvas.Find("Name").GetComponent<TextMeshProUGUI>();
+            dialogueText = canvas.Find("DialogueText").GetComponent<TextMeshProUGUI>();
+        }
+        else
+        {
+            Debug.LogError("Could not find 'Canvas' inside the DialogueBox prefab!");
+        }
+
+        // 3. Start the Logic
+        sentences.Clear();
         foreach (DialogueLine line in dialogue.lines)
         {
             sentences.Enqueue(line);
@@ -53,11 +72,10 @@ public class DialogueManager : MonoBehaviour
 
     public void DisplayNextSentence()
     {
-        Debug.Log("cispdeopkfpwoekfweopfk");
         if (isTyping)
         {
             StopAllCoroutines();
-            dialogueText.text = currentFullSentence;
+            if(dialogueText != null) dialogueText.text = currentFullSentence;
             isTyping = false;
             return;
         }
@@ -70,16 +88,19 @@ public class DialogueManager : MonoBehaviour
 
         DialogueLine currentLine = sentences.Dequeue();
 
-        nameText.text = currentLine.speakerName;
+        if(nameText != null) nameText.text = currentLine.speakerName;
 
-        if (currentLine.portrait != null)
+        if (portraitImage != null)
         {
-            portraitImage.sprite = currentLine.portrait;
-            portraitImage.enabled = true;
-        }
-        else
-        {
-            portraitImage.enabled = false;
+            if (currentLine.portrait != null)
+            {
+                portraitImage.sprite = currentLine.portrait;
+                portraitImage.enabled = true;
+            }
+            else
+            {
+                portraitImage.enabled = false;
+            }
         }
 
         currentFullSentence = currentLine.text;
@@ -91,12 +112,12 @@ public class DialogueManager : MonoBehaviour
     IEnumerator TypeSentence(string sentence)
     {
         isTyping = true;
-        dialogueText.text = "";
+        if(dialogueText != null) dialogueText.text = "";
 
         foreach (char letter in sentence.ToCharArray())
         {
-            dialogueText.text += letter;
-            yield return new WaitForSeconds(0.02f);
+            if(dialogueText != null) dialogueText.text += letter;
+            yield return new WaitForSecondsRealtime(0.02f); 
         }
 
         isTyping = false;
@@ -104,8 +125,13 @@ public class DialogueManager : MonoBehaviour
 
     void EndDialogue()
     {
-        dialogueBox.SetActive(false);
+        isDialogueActive = false;
+        
+        if (currentDialogueBox != null)
+        {
+            Destroy(currentDialogueBox);
+        }
+        
         Debug.Log("End of conversation.");
-        Destroy(dialogueBox);
     }
 }
