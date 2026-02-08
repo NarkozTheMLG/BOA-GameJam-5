@@ -49,7 +49,7 @@ public class BattleSystem : MonoBehaviour
     void Start()
     {
         state = BattleState.NONE;
-
+        playerCurrentHealth = playerMaxHealth;
         // Cache Images
         if (schizophreniaButton != null) schizoBtnImage = schizophreniaButton.GetComponent<Image>();
         if (insomniaButton != null) insomniaBtnImage = insomniaButton.GetComponent<Image>();
@@ -79,7 +79,6 @@ public class BattleSystem : MonoBehaviour
 
         if (Enemy != null) HUDManager.Instance.SetEnemyName(Enemy.sicknessName);
 
-        playerCurrentHealth = playerMaxHealth;
         HUDManager.Instance.UpdatePlayerHealth(playerCurrentHealth, playerMaxHealth);
         
         playerCurrentEnergy = playerMaxEnergy;
@@ -200,7 +199,7 @@ public class BattleSystem : MonoBehaviour
             // Extra safety check in case they somehow clicked it
             if (Schizophrenia != null && playerCurrentEnergy < Schizophrenia.energyCost) return;
 
-            if (Random.value <= 0.33f)
+            if (Random.value <= 0.20f)
             {
                 Debug.Log("Schizo Attack Failed!");
                 LoseEnergy(Schizophrenia.energyCost);
@@ -345,7 +344,7 @@ public class BattleSystem : MonoBehaviour
         // --- SCHIZO FAIL CHECK ---
         if (Enemy != null && Enemy.sicknessName == "Schizophrenia")
         {
-            if (Random.value <= 0.33f)
+            if (Random.value <= 0.20f)
             {
                 Debug.Log("Enemy Schizo Missed!");
                 StartCoroutine(ShowTextDelayed("What!?...", enemyTransform, 0.5f));
