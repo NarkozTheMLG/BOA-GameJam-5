@@ -649,7 +649,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DoorInteract
   creaturePrefab: {fileID: 7329943352300402552, guid: b45e6c3106eb1434a8a21fd9644cb79e, type: 3}
   roomSceneName: Room
-  doorID: Door1
+  doorID: Door3
   requiresIDCard: 0
   lockedMessageUI: {fileID: 0}
   messageDisplayTime: 2
@@ -839,7 +839,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DoorInteract
   creaturePrefab: {fileID: 0}
   roomSceneName: Room
-  doorID: Door2
+  doorID: Door4
   requiresIDCard: 0
   lockedMessageUI: {fileID: 0}
   messageDisplayTime: 2
@@ -2562,7 +2562,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorInteract
   creaturePrefab: {fileID: 0}
-  roomSceneName: 
+  roomSceneName: RoomBOOS
   doorID: Elevator1
   requiresIDCard: 1
   lockedMessageUI: {fileID: 1244641076}
