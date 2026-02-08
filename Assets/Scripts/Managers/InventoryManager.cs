@@ -7,7 +7,7 @@ public class InventoryManager : MonoBehaviour
     public static InventoryManager Instance { get; private set; }
 
     [Header("Inventory Counts")]
-    public int schizophreniaCount = 1;
+    public int schizophreniaCount = 0;
     public int insomniaCount = 0;
     public int lactoseCount = 0;
 

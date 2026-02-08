@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 1896447400734509546}
   - component: {fileID: 4678069092143599550}
   - component: {fileID: 5905741887108667961}
-  - component: {fileID: 5335688052841005827}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -159,28 +158,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCollision
   battleSystem: {fileID: 4678069092143599550}
---- !u!114 &5335688052841005827
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 450476997146278867}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d1df7bfbdf8b55847b73c2d42056ca4f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HUDManager
-  energyContainer: {fileID: 0}
-  enemyHealthContainer: {fileID: 0}
-  enemyNameContainer: {fileID: 0}
-  playerHealthText: {fileID: 0}
-  playerHealthBar: {fileID: 0}
-  energyText: {fileID: 0}
-  energyBar: {fileID: 0}
-  enemyHealthBar: {fileID: 0}
-  enemyHealthText: {fileID: 0}
-  enemyNameText: {fileID: 0}
 --- !u!1 &918127226557069018
 GameObject:
   m_ObjectHideFlags: 0
@@ -1266,7 +1243,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6201388062092029234}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: BubbleContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}

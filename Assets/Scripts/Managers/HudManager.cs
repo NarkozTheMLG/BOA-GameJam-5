@@ -1,6 +1,6 @@
 using UnityEngine;
-using UnityEngine.UI;  // For your existing Legacy Text
-using TMPro;           // For the new Enemy Name
+using UnityEngine.UI;  
+using TMPro;           
 
 public class HUDManager : MonoBehaviour
 {
@@ -12,29 +12,29 @@ public class HUDManager : MonoBehaviour
     [SerializeField] private GameObject enemyNameContainer;
 
     [Header("Player UI")]
-    // Back to standard Text (Legacy)
     [SerializeField] private Text playerHealthText;
     [SerializeField] private Slider playerHealthBar;
-
-    // Back to standard Text (Legacy)
     [SerializeField] private Text energyText;
     [SerializeField] private Slider energyBar;
 
     [Header("Enemy UI")]
     [SerializeField] private Slider enemyHealthBar;
-
-    // Back to standard Text (Legacy)
     [SerializeField] private Text enemyHealthText;
-
-    // KEEP THIS ONE AS TextMeshPro (The new addition)
     [SerializeField] private TextMeshProUGUI enemyNameText;
 
     void Awake()
     {
-        if (Instance == null) {
+        // --- SINGLETON LOGIC START ---
+        if (Instance == null)
+        {
             Instance = this;
-            DontDestroyOnLoad(gameObject);}
-        else Destroy(gameObject);
+            DontDestroyOnLoad(gameObject); // Keeps the HUD (and this script) alive
+        }
+        else
+        {
+            Destroy(gameObject); // Destroys duplicate HUDs if you reload the scene
+        }
+        // --- SINGLETON LOGIC END ---
     }
 
     public void ToggleBattleUI(bool isActive)
@@ -46,10 +46,7 @@ public class HUDManager : MonoBehaviour
 
     public void SetEnemyName(string name)
     {
-        if (enemyNameText != null)
-        {
-            enemyNameText.text = name;
-        }
+        if (enemyNameText != null) enemyNameText.text = name;
     }
 
     public void UpdatePlayerHealth(int current, int max)

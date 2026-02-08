@@ -240,6 +240,8 @@ GameObject:
   - component: {fileID: 8976305121635732340}
   - component: {fileID: 7829489202661648271}
   - component: {fileID: 7239447293552286884}
+  - component: {fileID: -2079110087899196876}
+  - component: {fileID: -6249829378617591997}
   m_Layer: 5
   m_Name: HUD
   m_TagString: Untagged
@@ -331,6 +333,40 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &-2079110087899196876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 961910884051219414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8965758c6869d4e30bac6f1cdd137143, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HUDKeeper
+--- !u!114 &-6249829378617591997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 961910884051219414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1df7bfbdf8b55847b73c2d42056ca4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HUDManager
+  energyContainer: {fileID: 0}
+  enemyHealthContainer: {fileID: 0}
+  enemyNameContainer: {fileID: 0}
+  playerHealthText: {fileID: 0}
+  playerHealthBar: {fileID: 0}
+  energyText: {fileID: 0}
+  energyBar: {fileID: 0}
+  enemyHealthBar: {fileID: 0}
+  enemyHealthText: {fileID: 0}
+  enemyNameText: {fileID: 0}
 --- !u!1 &1149639084319399348
 GameObject:
   m_ObjectHideFlags: 0

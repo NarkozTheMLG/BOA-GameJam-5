@@ -9,9 +9,13 @@ public class DialogueManager : MonoBehaviour
     public static DialogueManager Instance;
 
     [Header("Prefab Settings")]
-    public GameObject dialogueBoxPrefab; // Drag your PREFAB here (from the Project folder)
+    public GameObject dialogueBoxPrefab; 
 
-    // Private variables to hold the created object and its parts
+    [Header("End of Dialogue Settings")]
+    public GameObject objectToDestroy; // <--- DRAG THE OBJECT HERE IN INSPECTOR
+    public string itemRewardName;      // <--- TYPE "Schizophrenia" HERE
+
+    // Private variables for the UI
     private GameObject currentDialogueBox;
     private Image portraitImage;
     private TextMeshProUGUI nameText;
@@ -30,25 +34,23 @@ public class DialogueManager : MonoBehaviour
 
     void Update()
     {
-        // Only listen for clicks if dialogue is active AND the box exists
+        // Only listen for clicks if dialogue is active
         if (isDialogueActive && Input.GetMouseButtonDown(0))
         {
             DisplayNextSentence();
         }
     }
 
+    // Call this normally: DialogueManager.Instance.StartDialogue(yourDialogue);
     public void StartDialogue(Dialogue dialogue)
     {
-        // 1. Create the Box from the Prefab
-        if (currentDialogueBox != null) Destroy(currentDialogueBox); // Safety cleanup
-        
+        // 1. Create the Box
+        if (currentDialogueBox != null) Destroy(currentDialogueBox);
         currentDialogueBox = Instantiate(dialogueBoxPrefab);
         isDialogueActive = true;
 
-        // 2. Find the UI parts inside the new box automatically
-        // We use the exact names from your screenshot: "Canvas/Portrait", etc.
+        // 2. Find UI parts inside the prefab
         Transform canvas = currentDialogueBox.transform.Find("Canvas");
-
         if (canvas != null)
         {
             portraitImage = canvas.Find("Portrait").GetComponent<Image>();
@@ -57,10 +59,10 @@ public class DialogueManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Could not find 'Canvas' inside the DialogueBox prefab!");
+            Debug.LogError("Could not find 'Canvas' inside DialogueBox prefab!");
         }
 
-        // 3. Start the Logic
+        // 3. Queue Sentences
         sentences.Clear();
         foreach (DialogueLine line in dialogue.lines)
         {
@@ -127,11 +129,28 @@ public class DialogueManager : MonoBehaviour
     {
         isDialogueActive = false;
         
+        // 1. Destroy the UI Box
         if (currentDialogueBox != null)
         {
             Destroy(currentDialogueBox);
         }
+
+        // --- THE LOGIC YOU ASKED FOR ---
         
+        // 2. Add Item (if you typed a name in Inspector)
+        if (!string.IsNullOrEmpty(itemRewardName))
+        {
+            InventoryManager.Instance.AddItem(itemRewardName, 1);
+            Debug.Log("Reward Added: " + itemRewardName);
+        }
+
+        // 3. Destroy the Object (the one you dragged in Inspector)
+        if (objectToDestroy != null)
+        {
+            Destroy(objectToDestroy);
+            Debug.Log("Object Destroyed.");
+        }
+
         Debug.Log("End of conversation.");
     }
 }
