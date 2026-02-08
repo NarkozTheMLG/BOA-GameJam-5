@@ -1,19 +1,16 @@
 fileFormatVersion: 2
-guid: 7080602a36064f2478a40f237ec27fef
+guid: 6a8d78d5123a18943bce21914e804d3d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3782847283032901274
-    second: "Asanso\u0308r_0"
+      213: -8074303752137613853
+    second: Scene1frame_1_0
   - first:
-      213: -33340220740328226
-    second: "Asanso\u0308r_1"
+      213: 4274301437396319328
+    second: Scene1frame_1_1
   - first:
-      213: 8050204684261836097
-    second: "Asanso\u0308r_2"
-  - first:
-      213: -3372842553442445747
-    second: "Asanso\u0308r_3"
+      213: -8089861381453285182
+    second: Scene1frame_1_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -109,13 +106,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "Asanso\u0308r_0"
+      name: Scene1frame_1_0
       rect:
         serializedVersion: 2
-        x: 718
-        y: 181
-        width: 517
-        height: 628
+        x: 682
+        y: 262
+        width: 433
+        height: 561
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -124,20 +121,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a964ab0cf8f5f7430800000000000000
-      internalID: 3782847283032901274
+      spriteID: 3eddb35548f42ff80800000000000000
+      internalID: -8074303752137613853
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "Asanso\u0308r_1"
+      name: Scene1frame_1_1
       rect:
         serializedVersion: 2
-        x: 1213
-        y: 439
-        width: 74
-        height: 96
+        x: 695
+        y: 812
+        width: 388
+        height: 50
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -146,20 +143,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ed42a02fe3d898ff0800000000000000
-      internalID: -33340220740328226
+      spriteID: 06cf2f6d28e515b30800000000000000
+      internalID: 4274301437396319328
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "Asanso\u0308r_2"
+      name: Scene1frame_1_2
       rect:
         serializedVersion: 2
-        x: 869
-        y: 144
-        width: 16
-        height: 17
+        x: 1069
+        y: 284
+        width: 20
+        height: 564
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -168,30 +165,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 145cc9e228218bf60800000000000000
-      internalID: 8050204684261836097
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: "Asanso\u0308r_3"
-      rect:
-        serializedVersion: 2
-        x: 871
-        y: 76
-        width: 39
-        height: 20
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d46ddb651914131d0800000000000000
-      internalID: -3372842553442445747
+      spriteID: 2c8735c7fe90bbf80800000000000000
+      internalID: -8089861381453285182
       vertices: []
       indices: 
       edges: []
@@ -210,10 +185,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      "Asanso\u0308r_0": 3782847283032901274
-      "Asanso\u0308r_1": -33340220740328226
-      "Asanso\u0308r_2": 8050204684261836097
-      "Asanso\u0308r_3": -3372842553442445747
+      Scene1frame_1_0: -8074303752137613853
+      Scene1frame_1_1: 4274301437396319328
+      Scene1frame_1_2: -8089861381453285182
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
