@@ -1,14 +1,13 @@
 fileFormatVersion: 2
-<<<<<<< HEAD
-guid: d90fce5600d9c0c4dbfee0a3ff6435b6
-=======
-guid: 4471bd7baf7a3cd44afc0870ad765c2c
->>>>>>> 6e2d0b2abe0c8fb23053aad2fc3dfda5213b587a
+guid: 4f0d26ee590cf2c488110c353ad2a70a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4067845939457233721
-    second: "Yang\u0131n tu\u0308pu\u0308_0"
+      213: -8188198914606492527
+    second: Player_idle_0
+  - first:
+      213: -4460863924910438173
+    second: Player_idle_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -55,7 +54,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 400
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -104,13 +103,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "Yang\u0131n tu\u0308pu\u0308_0"
+      name: Player_idle_0
       rect:
         serializedVersion: 2
-        x: 701
-        y: 549
-        width: 85
-        height: 218
+        x: 123
+        y: 51
+        width: 583
+        height: 1017
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -119,8 +118,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7cce2a1abab1c87c0800000000000000
-      internalID: -4067845939457233721
+      spriteID: 19414a8587cad5e80800000000000000
+      internalID: -8188198914606492527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Player_idle_1
+      rect:
+        serializedVersion: 2
+        x: 945
+        y: 50
+        width: 583
+        height: 1018
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e8cb5c15e3d712c0800000000000000
+      internalID: -4460863924910438173
       vertices: []
       indices: 
       edges: []
@@ -139,7 +160,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      "Yang\u0131n tu\u0308pu\u0308_0": -4067845939457233721
+      Player_idle_0: -8188198914606492527
+      Player_idle_1: -4460863924910438173
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

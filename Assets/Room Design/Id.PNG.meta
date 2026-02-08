@@ -1,14 +1,10 @@
 fileFormatVersion: 2
-<<<<<<< HEAD
-guid: d90fce5600d9c0c4dbfee0a3ff6435b6
-=======
-guid: 4471bd7baf7a3cd44afc0870ad765c2c
->>>>>>> 6e2d0b2abe0c8fb23053aad2fc3dfda5213b587a
+guid: be84d939dd9a85041831e0ddcae31f5b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4067845939457233721
-    second: "Yang\u0131n tu\u0308pu\u0308_0"
+      213: -2431308395433880756
+    second: Id_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -104,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "Yang\u0131n tu\u0308pu\u0308_0"
+      name: Id_0
       rect:
         serializedVersion: 2
-        x: 701
-        y: 549
-        width: 85
-        height: 218
+        x: 275
+        y: 411
+        width: 282
+        height: 184
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -119,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7cce2a1abab1c87c0800000000000000
-      internalID: -4067845939457233721
+      spriteID: c431dbe55e1424ed0800000000000000
+      internalID: -2431308395433880756
       vertices: []
       indices: 
       edges: []
@@ -139,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      "Yang\u0131n tu\u0308pu\u0308_0": -4067845939457233721
+      Id_0: -2431308395433880756
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

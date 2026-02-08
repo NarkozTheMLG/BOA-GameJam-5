@@ -3,6 +3,8 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     private static GameManager instance;
+
+    public bool hasIDCard = false;
     public static GameManager Instance
     {
         get
