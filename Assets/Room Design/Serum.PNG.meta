@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d90fce5600d9c0c4dbfee0a3ff6435b6
+guid: 2148d00839914624baab2af2e2a6e98a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4067845939457233721
-    second: "Yang\u0131n tu\u0308pu\u0308_0"
+      213: -6444184535084237252
+    second: Serum_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "Yang\u0131n tu\u0308pu\u0308_0"
+      name: Serum_0
       rect:
         serializedVersion: 2
-        x: 701
-        y: 549
-        width: 85
-        height: 218
+        x: 800
+        y: 161
+        width: 163
+        height: 755
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7cce2a1abab1c87c0800000000000000
-      internalID: -4067845939457233721
+      spriteID: c3efc3fde48a196a0800000000000000
+      internalID: -6444184535084237252
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      "Yang\u0131n tu\u0308pu\u0308_0": -4067845939457233721
+      Serum_0: -6444184535084237252
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
