@@ -1,14 +1,19 @@
 fileFormatVersion: 2
-<<<<<<< HEAD
-guid: d90fce5600d9c0c4dbfee0a3ff6435b6
-=======
-guid: 4471bd7baf7a3cd44afc0870ad765c2c
->>>>>>> 6e2d0b2abe0c8fb23053aad2fc3dfda5213b587a
+guid: 4326307cfa80c004bbb01788c27f2c97
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4067845939457233721
-    second: "Yang\u0131n tu\u0308pu\u0308_0"
+      213: 3782847283032901274
+    second: "Asanso\u0308r_0"
+  - first:
+      213: -33340220740328226
+    second: "Asanso\u0308r_1"
+  - first:
+      213: 8050204684261836097
+    second: "Asanso\u0308r_2"
+  - first:
+      213: -3372842553442445747
+    second: "Asanso\u0308r_3"
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -104,23 +109,89 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "Yang\u0131n tu\u0308pu\u0308_0"
+      name: "Asanso\u0308r_0"
       rect:
         serializedVersion: 2
-        x: 701
-        y: 549
-        width: 85
-        height: 218
+        x: 718
+        y: 181
+        width: 587
+        height: 663
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7cce2a1abab1c87c0800000000000000
-      internalID: -4067845939457233721
+      spriteID: a964ab0cf8f5f7430800000000000000
+      internalID: 3782847283032901274
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Asanso\u0308r_1"
+      rect:
+        serializedVersion: 2
+        x: 1213
+        y: 439
+        width: 74
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed42a02fe3d898ff0800000000000000
+      internalID: -33340220740328226
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Asanso\u0308r_2"
+      rect:
+        serializedVersion: 2
+        x: 869
+        y: 144
+        width: 16
+        height: 17
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 145cc9e228218bf60800000000000000
+      internalID: 8050204684261836097
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Asanso\u0308r_3"
+      rect:
+        serializedVersion: 2
+        x: 871
+        y: 76
+        width: 39
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d46ddb651914131d0800000000000000
+      internalID: -3372842553442445747
       vertices: []
       indices: 
       edges: []
@@ -129,7 +200,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 6517f10718bae2b4d8e690ae6f23657e
     internalID: 0
     vertices: []
     indices: 
@@ -139,7 +210,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      "Yang\u0131n tu\u0308pu\u0308_0": -4067845939457233721
+      "Asanso\u0308r_0": 3782847283032901274
+      "Asanso\u0308r_1": -33340220740328226
+      "Asanso\u0308r_2": 8050204684261836097
+      "Asanso\u0308r_3": -3372842553442445747
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
