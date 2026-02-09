@@ -8,14 +8,17 @@ public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance;
 
+    [Header("IMPORTANT: Unique ID")]
+    public string uniqueID;
+
     [Header("Prefab Settings")]
-    public GameObject dialogueBoxPrefab; 
+    public GameObject dialogueBoxPrefab;
 
     [Header("End of Dialogue Settings")]
-    public GameObject objectToDestroy; // <--- DRAG THE OBJECT HERE IN INSPECTOR
-    public string itemRewardName;      // <--- TYPE "Schizophrenia" HERE
+    public GameObject objectToDestroy1;
+    public GameObject objectToDestroy2;
+    public string itemRewardName;
 
-    // Private variables for the UI
     private GameObject currentDialogueBox;
     private Image portraitImage;
     private TextMeshProUGUI nameText;
@@ -32,24 +35,33 @@ public class DialogueManager : MonoBehaviour
         sentences = new Queue<DialogueLine>();
     }
 
+    void Start()
+    {
+        if (!string.IsNullOrEmpty(uniqueID) && PlayerPrefs.GetInt(uniqueID) == 1)
+        {
+            if (objectToDestroy1 != null) Destroy(objectToDestroy1);
+            if (objectToDestroy2 != null) Destroy(objectToDestroy2);
+
+            Destroy(gameObject);
+        }
+    }
+
     void Update()
     {
-        // Only listen for clicks if dialogue is active
         if (isDialogueActive && Input.GetMouseButtonDown(0))
         {
             DisplayNextSentence();
         }
     }
 
-    // Call this normally: DialogueManager.Instance.StartDialogue(yourDialogue);
     public void StartDialogue(Dialogue dialogue)
     {
-        // 1. Create the Box
+        if (!string.IsNullOrEmpty(uniqueID) && PlayerPrefs.GetInt(uniqueID) == 1) return;
+
         if (currentDialogueBox != null) Destroy(currentDialogueBox);
         currentDialogueBox = Instantiate(dialogueBoxPrefab);
         isDialogueActive = true;
 
-        // 2. Find UI parts inside the prefab
         Transform canvas = currentDialogueBox.transform.Find("Canvas");
         if (canvas != null)
         {
@@ -57,12 +69,7 @@ public class DialogueManager : MonoBehaviour
             nameText = canvas.Find("Name").GetComponent<TextMeshProUGUI>();
             dialogueText = canvas.Find("DialogueText").GetComponent<TextMeshProUGUI>();
         }
-        else
-        {
-            Debug.LogError("Could not find 'Canvas' inside DialogueBox prefab!");
-        }
 
-        // 3. Queue Sentences
         sentences.Clear();
         foreach (DialogueLine line in dialogue.lines)
         {
@@ -77,7 +84,7 @@ public class DialogueManager : MonoBehaviour
         if (isTyping)
         {
             StopAllCoroutines();
-            if(dialogueText != null) dialogueText.text = currentFullSentence;
+            if (dialogueText != null) dialogueText.text = currentFullSentence;
             isTyping = false;
             return;
         }
@@ -90,7 +97,7 @@ public class DialogueManager : MonoBehaviour
 
         DialogueLine currentLine = sentences.Dequeue();
 
-        if(nameText != null) nameText.text = currentLine.speakerName;
+        if (nameText != null) nameText.text = currentLine.speakerName;
 
         if (portraitImage != null)
         {
@@ -114,12 +121,12 @@ public class DialogueManager : MonoBehaviour
     IEnumerator TypeSentence(string sentence)
     {
         isTyping = true;
-        if(dialogueText != null) dialogueText.text = "";
+        if (dialogueText != null) dialogueText.text = "";
 
         foreach (char letter in sentence.ToCharArray())
         {
-            if(dialogueText != null) dialogueText.text += letter;
-            yield return new WaitForSecondsRealtime(0.02f); 
+            if (dialogueText != null) dialogueText.text += letter;
+            yield return new WaitForSecondsRealtime(0.02f);
         }
 
         isTyping = false;
@@ -128,29 +135,26 @@ public class DialogueManager : MonoBehaviour
     void EndDialogue()
     {
         isDialogueActive = false;
-        
-        // 1. Destroy the UI Box
+
         if (currentDialogueBox != null)
         {
             Destroy(currentDialogueBox);
         }
 
-        // --- THE LOGIC YOU ASKED FOR ---
-        
-        // 2. Add Item (if you typed a name in Inspector)
         if (!string.IsNullOrEmpty(itemRewardName))
         {
             InventoryManager.Instance.AddItem(itemRewardName, 1);
-            Debug.Log("Reward Added: " + itemRewardName);
         }
 
-        // 3. Destroy the Object (the one you dragged in Inspector)
-        if (objectToDestroy != null)
+        if (objectToDestroy1 != null) Destroy(objectToDestroy1);
+        if (objectToDestroy2 != null) Destroy(objectToDestroy2);
+
+        if (!string.IsNullOrEmpty(uniqueID))
         {
-            Destroy(objectToDestroy);
-            Debug.Log("Object Destroyed.");
+            PlayerPrefs.SetInt(uniqueID, 1);
+            PlayerPrefs.Save();
         }
 
-        Debug.Log("End of conversation.");
+        Destroy(gameObject);
     }
 }

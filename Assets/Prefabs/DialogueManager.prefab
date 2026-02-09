@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 7562940320726442978}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -309.06818, y: 0.03899, z: 0}
+  m_LocalPosition: {x: -44.80829, y: -0.35192, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -45,7 +45,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a272893d9b444a14899ed2199c1aec1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogueManager
-  dialogueBoxPrefab: {fileID: 2667243900223224609, guid: 3fee666252e123143bdad8d31018dbdc, type: 3}
+  uniqueID: 1
+  playerMovement: {fileID: 1896447400734509546, guid: 0ecbf0944c23342c6a86314df0aaf247, type: 3}
+  dialogueBoxPrefab: {fileID: 1272544665499472899, guid: 3fee666252e123143bdad8d31018dbdc, type: 3}
+  objectToDestroy1: {fileID: 0}
+  objectToDestroy2: {fileID: 7562940320726442978}
+  itemRewardName: Schizophrenia
 --- !u!114 &78178018848853540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60,37 +65,43 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TestDialogue
   myConversation:
     lines:
-    - speakerName: MC
-      portrait: {fileID: 5684768501951887823, guid: 29baae151e794b3408fb08e98d298a4a, type: 3}
+    - speakerName: ' '
+      portrait: {fileID: 900950145977860413, guid: 5392e20a7a7d84851adc615fb0f192e1, type: 3}
       text: 'I do not want to be scared but I know you are real so it is hard to
         not be.
 
 '
-    - speakerName: sch
-      portrait: {fileID: 6872048183865392920, guid: 09c09a99fbb0ef14d836ad81c16438fb, type: 3}
+    - speakerName: ' '
+      portrait: {fileID: 1734010460411829964, guid: f5704770900b5448dab8c92d57acde1d, type: 3}
       text: 'I am indeed real but there is no reason to be scared as we were once
         one
 
 '
-    - speakerName: mc
-      portrait: {fileID: 6872048183865392920, guid: 09c09a99fbb0ef14d836ad81c16438fb, type: 3}
+    - speakerName: ' '
+      portrait: {fileID: 900950145977860413, guid: 5392e20a7a7d84851adc615fb0f192e1, type: 3}
       text: 'What do you mean?
 
 '
-    - speakerName: sch
-      portrait: {fileID: 6872048183865392920, guid: 09c09a99fbb0ef14d836ad81c16438fb, type: 3}
-      text: 'You ever wondered why you are the only patient in this asylum? It is
-        because everyone is cured and left. One of the doctors use a special technique
-        to seperate patients from their illnesses. And I am yours
-
-
-'
-    - speakerName: mc
-      portrait: {fileID: 6872048183865392920, guid: 09c09a99fbb0ef14d836ad81c16438fb, type: 3}
-      text: "We are gonna be one again when I am done with you if you know what I
-        mean \U0001F60F anyway. Does the chief psychiatrist know about this? I can
-        prove him that I am not insane if you come with me.\n"
-    - speakerName: mc
-      portrait: {fileID: 6872048183865392920, guid: 09c09a99fbb0ef14d836ad81c16438fb, type: 3}
-      text: oh... then I shall come with you and help you on your journey as this
-        place is known for being abundant of monsters.
+    - speakerName: 
+      portrait: {fileID: 1734010460411829964, guid: f5704770900b5448dab8c92d57acde1d, type: 3}
+      text: "You ever wondered why you are the only patient in this asylum? It is
+        because everyone is cured and left. \n\n"
+    - speakerName: 
+      portrait: {fileID: 1734010460411829964, guid: f5704770900b5448dab8c92d57acde1d, type: 3}
+      text: One of the doctors use a special technique to seperate patients from
+        their illnesses. And I am yours
+    - speakerName: 
+      portrait: {fileID: -805005509710764423, guid: 36b9e507af04a437baa99e97e1a8d191, type: 3}
+      text: 'We are gonna be one again when I am done with you if you know what I
+        mean '
+    - speakerName: 
+      portrait: {fileID: 2313223650634593228, guid: c0967daed9427445b86996ae2f10e63c, type: 3}
+      text: 'anyway does the chief psychiatrist know about this? I can prove him
+        that I am not insane if you come with me. '
+    - speakerName: 
+      portrait: {fileID: 8772567013323165108, guid: 29baae151e794b3408fb08e98d298a4a, type: 3}
+      text: 'oh... then I shall come with you... '
+    - speakerName: 
+      portrait: {fileID: 1734010460411829964, guid: f5704770900b5448dab8c92d57acde1d, type: 3}
+      text: and help you on your journey as this place is known for being abundant
+        of monsters.
