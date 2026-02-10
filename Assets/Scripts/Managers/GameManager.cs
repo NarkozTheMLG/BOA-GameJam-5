@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     }
 
     public GameObject currentCreaturePrefab;
-    public string lastDoorID; // YENÝ: Son kullanýlan kapý ID'si
+    public string lastDoorID; 
 
     void Awake()
     {

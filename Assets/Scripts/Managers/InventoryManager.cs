@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI; // Required for Image
+using UnityEngine.UI; 
 using TMPro;
 
 public class InventoryManager : MonoBehaviour
@@ -45,7 +45,7 @@ public class InventoryManager : MonoBehaviour
         else if (type == "Insomnia") insomniaCount += amount;
         else if (type == "Lactose") lactoseCount += amount;
 
-        UpdateUI(); // Updates immediately when item is added
+        UpdateUI(); 
     }
 
     public bool HasItem(string type)
@@ -62,7 +62,6 @@ public class InventoryManager : MonoBehaviour
         else if (type == "Insomnia") insomniaCount--;
         else if (type == "Lactose") lactoseCount--;
 
-        // Clamp to 0
         if (schizophreniaCount < 0) schizophreniaCount = 0;
         if (insomniaCount < 0) insomniaCount = 0;
         if (lactoseCount < 0) lactoseCount = 0;
@@ -72,18 +71,15 @@ public class InventoryManager : MonoBehaviour
 
     private void UpdateUI()
     {
-        // 1. Update The Numbers
         if (schizoText != null) schizoText.text = "x" + schizophreniaCount.ToString();
         if (insomniaText != null) insomniaText.text = "x" + insomniaCount.ToString();
         if (lactoseText != null) lactoseText.text = "x" + lactoseCount.ToString();
 
-        // 2. Update The Dimming
         UpdateImageAlpha(schizoImage, schizophreniaCount);
         UpdateImageAlpha(insomniaImage, insomniaCount);
         UpdateImageAlpha(lactoseImage, lactoseCount);
     }
 
-    // Helper function to handle the transparency
     private void UpdateImageAlpha(Image img, int count)
     {
         if (img == null) return;
@@ -91,11 +87,11 @@ public class InventoryManager : MonoBehaviour
         Color c = img.color;
         if (count > 0)
         {
-            c.a = 1f; // Full Visibility
+            c.a = 1f; 
         }
         else
         {
-            c.a = 0.3f; // Dimmed (30% visible)
+            c.a = 0.3f; 
         }
         img.color = c;
     }

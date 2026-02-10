@@ -12,7 +12,6 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
 
-        // Child objeden Animator ve SpriteRenderer al
         animator = GetComponentInChildren<Animator>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
@@ -27,7 +26,6 @@ public class PlayerMovement : MonoBehaviour
 
         if (!isMovementEnabled)
         {
-            // Hareketi durdur
             rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
             UpdateAnimation(0);
             return;

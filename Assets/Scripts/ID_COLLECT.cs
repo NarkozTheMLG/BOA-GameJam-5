@@ -3,8 +3,8 @@ using UnityEngine;
 public class IDCard : MonoBehaviour
 {
     [Header("Float Effect")]
-    public float floatSpeed = 1f;        // Hareket hýzý
-    public float floatAmplitude = 0.3f;  // Yukarý-aþaðý mesafesi
+    public float floatSpeed = 1f;       
+    public float floatAmplitude = 0.3f;  
 
     [Header("Rotation (Optional)")]
     public bool rotateCard = true;
@@ -19,7 +19,6 @@ public class IDCard : MonoBehaviour
 
     void Update()
     {
-        // Yukarý-aþaðý hareket (sine wave kullanarak)
         float newY = startPos.y + Mathf.Sin(Time.time * floatSpeed) * floatAmplitude;
         transform.position = new Vector3(startPos.x, newY, startPos.z);
 
@@ -37,13 +36,8 @@ public class IDCard : MonoBehaviour
 
     void CollectID()
     {
-        Debug.Log("ID Kartý toplandý!");
+        Debug.Log("ID Kartï¿½ toplandï¿½!");
 
-        // Burada ses efekti ekleyebilirsiniz
-        // AudioSource.PlayClipAtPoint(collectSound, transform.position);
-
-        // Inventory'ye ekle
-        GameManager.Instance.hasIDCard = true;
 
         Destroy(gameObject);
     }

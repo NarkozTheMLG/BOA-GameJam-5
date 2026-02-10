@@ -181,6 +181,7 @@ MonoBehaviour:
   lastFramesCount: 2
   loop: 0
   nextSceneName: MainHall
+  managerPrefab: {fileID: 0}
 --- !u!114 &505885735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -564,6 +565,7 @@ MonoBehaviour:
   lastFramesCount: 2
   loop: 1
   nextSceneName: MainHall
+  managerPrefab: {fileID: 7562940320726442978, guid: 6840ac8cb2d314fa08854d3158b878f3, type: 3}
 --- !u!4 &1569703507
 Transform:
   m_ObjectHideFlags: 0

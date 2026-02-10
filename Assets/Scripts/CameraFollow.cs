@@ -13,7 +13,6 @@ public class CameraFollow : MonoBehaviour
 
     void Start()
     {
-        // Kameranın başlangıç Y'sini kilitle
         fixedY = transform.position.y;
     }
 
@@ -34,7 +33,7 @@ public class CameraFollow : MonoBehaviour
 
         Vector3 desiredPosition = new Vector3(
             clampedX,
-            fixedY,                 // 🔒 Y SABİT
+            fixedY,                
             transform.position.z
         );
 

@@ -8,6 +8,8 @@ public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance;
 
+    private static HashSet<string> finishedDialoguesInSession = new HashSet<string>();
+
     [Header("IMPORTANT: Unique ID")]
     public string uniqueID;
 
@@ -31,13 +33,23 @@ public class DialogueManager : MonoBehaviour
 
     void Awake()
     {
-        if (Instance == null) Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject); 
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         sentences = new Queue<DialogueLine>();
     }
 
     void Start()
     {
-        if (!string.IsNullOrEmpty(uniqueID) && PlayerPrefs.GetInt(uniqueID) == 1)
+        if (!string.IsNullOrEmpty(uniqueID) && finishedDialoguesInSession.Contains(uniqueID))
         {
             if (objectToDestroy1 != null) Destroy(objectToDestroy1);
             if (objectToDestroy2 != null) Destroy(objectToDestroy2);
@@ -56,7 +68,7 @@ public class DialogueManager : MonoBehaviour
 
     public void StartDialogue(Dialogue dialogue)
     {
-        if (!string.IsNullOrEmpty(uniqueID) && PlayerPrefs.GetInt(uniqueID) == 1) return;
+        if (!string.IsNullOrEmpty(uniqueID) && finishedDialoguesInSession.Contains(uniqueID)) return;
 
         if (currentDialogueBox != null) Destroy(currentDialogueBox);
         currentDialogueBox = Instantiate(dialogueBoxPrefab);
@@ -151,8 +163,7 @@ public class DialogueManager : MonoBehaviour
 
         if (!string.IsNullOrEmpty(uniqueID))
         {
-            PlayerPrefs.SetInt(uniqueID, 1);
-            PlayerPrefs.Save();
+            finishedDialoguesInSession.Add(uniqueID);
         }
 
         Destroy(gameObject);

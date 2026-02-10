@@ -24,17 +24,15 @@ public class HUDManager : MonoBehaviour
 
     void Awake()
     {
-        // --- SINGLETON LOGIC START ---
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // Keeps the HUD (and this script) alive
+            DontDestroyOnLoad(gameObject); 
         }
         else
         {
-            Destroy(gameObject); // Destroys duplicate HUDs if you reload the scene
+            Destroy(gameObject); 
         }
-        // --- SINGLETON LOGIC END ---
     }
 
     public void ToggleBattleUI(bool isActive)

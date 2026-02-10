@@ -50,7 +50,6 @@ public class BattleSystem : MonoBehaviour
     {
         state = BattleState.NONE;
         playerCurrentHealth = playerMaxHealth;
-        // Cache Images
         if (schizophreniaButton != null) schizoBtnImage = schizophreniaButton.GetComponent<Image>();
         if (insomniaButton != null) insomniaBtnImage = insomniaButton.GetComponent<Image>();
         if (lactoseButton != null) lactoseBtnImage = lactoseButton.GetComponent<Image>();
@@ -63,7 +62,6 @@ public class BattleSystem : MonoBehaviour
         Enemy = enemyFromWorld;
         enemyTransform = enemyTransFromWorld;
 
-        // Reset Sleep State
         playerIsAsleep = false;
         enemyIsAsleep = false;
 
@@ -93,28 +91,23 @@ public class BattleSystem : MonoBehaviour
 
     void SetupBattle()
     {
-        // Update buttons initially
         UpdateButtonStates();
         state = BattleState.PLAYERTURN;
         PlayerTurn();
     }
 
-    // --- NEW: CHECKS BOTH INVENTORY AND ENERGY ---
     void UpdateButtonStates()
     {
-        // 1. Schizophrenia
         bool hasSchizoItem = InventoryManager.Instance.HasItem("Schizophrenia");
         bool hasSchizoEnergy = (Schizophrenia != null && playerCurrentEnergy >= Schizophrenia.energyCost);
         
         if (schizophreniaButton != null)
         {
-            // Must have Item AND Energy to click
             bool interactable = hasSchizoItem && hasSchizoEnergy;
             schizophreniaButton.interactable = interactable;
             SetButtonAlpha(schizoBtnImage, interactable);
         }
 
-        // 2. Insomnia
         bool hasInsomniaItem = InventoryManager.Instance.HasItem("Insomnia");
         bool hasInsomniaEnergy = (Insomnia != null && playerCurrentEnergy >= Insomnia.energyCost);
         
@@ -125,7 +118,6 @@ public class BattleSystem : MonoBehaviour
             SetButtonAlpha(insomniaBtnImage, interactable);
         }
 
-        // 3. Lactose
         bool hasLactoseItem = InventoryManager.Instance.HasItem("Lactose");
         bool hasLactoseEnergy = (Lactose != null && playerCurrentEnergy >= Lactose.energyCost);
 
@@ -181,7 +173,6 @@ public class BattleSystem : MonoBehaviour
 
         Debug.Log("Player's turn. Choose an action.");
         
-        // Show UI and Refresh Buttons based on current Energy
         battleUI.SetActive(true); 
         UpdateButtonStates(); 
     }
@@ -190,13 +181,10 @@ public class BattleSystem : MonoBehaviour
     {
         if (state != BattleState.PLAYERTURN) return;
 
-        // Hide UI immediately so player can't click twice
         battleUI.SetActive(false);
 
-        // --- SCHIZOPHRENIA CHECK ---
         if (moveName == "Schizophrenia")
         {
-            // Extra safety check in case they somehow clicked it
             if (Schizophrenia != null && playerCurrentEnergy < Schizophrenia.energyCost) return;
 
             if (Random.value <= 0.20f)
@@ -208,7 +196,6 @@ public class BattleSystem : MonoBehaviour
                 return;
             }
         }
-        // ---------------------------
 
         GameObject prefabToUse = null;
         int damageToDeal = 0;
@@ -284,7 +271,6 @@ public class BattleSystem : MonoBehaviour
         if (playerCurrentEnergy > playerMaxEnergy) playerCurrentEnergy = playerMaxEnergy;
         HUDManager.Instance.UpdateEnergy(playerCurrentEnergy, playerMaxEnergy);
         
-        // Refresh buttons (in case we gained enough energy to use a move)
         UpdateButtonStates(); 
     }
 
@@ -294,7 +280,6 @@ public class BattleSystem : MonoBehaviour
         if (playerCurrentEnergy < 0) playerCurrentEnergy = 0;
         HUDManager.Instance.UpdateEnergy(playerCurrentEnergy, playerMaxEnergy);
         
-        // Refresh buttons (buttons will dim if energy drops too low)
         UpdateButtonStates();
     }
 

@@ -16,19 +16,16 @@ public class Sickness : MonoBehaviour
         if (currentHealth == 0) currentHealth = maxHealth;
     }
 
-    // CHANGED: Returns 'bool' now. 
-    // Returns TRUE if attack happens, FALSE if it fails (skips turn).
     public virtual bool Attack()
     {
         Debug.Log($"{sicknessName} attacks with {damage} damage!");
-        return true; // Default behavior: Always attack successfully
+        return true; 
     }
 
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
         if (currentHealth < 0) currentHealth = 0;
-        // Debug.Log(gameObject.name + " took " + damage + " damage. HP: " + currentHealth);
 
         if (currentHealth <= 0)
             Die();

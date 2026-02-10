@@ -9,7 +9,7 @@ public class FrameByFramePlayer : MonoBehaviour
     public float frameRate = 12f;
     public float lastFramesDuration = 2f;
     public int lastFramesCount = 2;
-    public bool loop = false; // Loop'u false yapýn
+    public bool loop = false; // Loop'u false yapï¿½n
     public string nextSceneName = "MainHall"; // Gidilecek sahne
 
     private int currentFrame = 0;
@@ -42,7 +42,6 @@ public class FrameByFramePlayer : MonoBehaviour
                     isPlaying = false;
                     Debug.Log("Video bitti! MainHall'a gidiliyor...");
 
-                    // Sahneye geç
                     SceneManager.LoadScene(nextSceneName);
                 }
             }

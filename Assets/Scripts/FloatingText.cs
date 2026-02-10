@@ -16,7 +16,6 @@ public class FloatingText : MonoBehaviour
 
     void Update()
     {
-        // 3. Float Upwards
         transform.Translate(Vector3.up * moveSpeed * Time.deltaTime);
     }
 
